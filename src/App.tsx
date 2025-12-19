@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import ChatPage from './components/ChatPage';
+import { wsService } from './services/websocket';
 import './App.css';
 
 function App() {
@@ -18,8 +19,15 @@ function App() {
     console.log('User registered successfully');
   };
 
+  const handleLogout = () => {
+    wsService.logout();
+    setIsAuthenticated(false);
+    setShowLogin(true);
+    console.log('User logged out');
+  };
+
   if (isAuthenticated) {
-    return <ChatPage />;
+    return <ChatPage onLogout={handleLogout} />;
   }
 
   return (

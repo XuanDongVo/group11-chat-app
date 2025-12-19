@@ -1,19 +1,10 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 import ChatArea from './ChatArea';
+import type { ChatPageProps, Conversation } from '../types';
 import './ChatPage.css';
 
-interface Conversation {
-  id: string;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  time: string;
-  unread?: number;
-  isOnline?: boolean;
-}
-
-function ChatPage() {
+function ChatPage({ onLogout }: ChatPageProps) {
   const [conversations] = useState<Conversation[]>([
     {
       id: '1',
@@ -60,6 +51,7 @@ function ChatPage() {
         conversations={conversations}
         selectedConversation={selectedConversation}
         onSelectConversation={setSelectedConversation}
+        onLogout={onLogout}
       />
       <ChatArea conversation={selectedConversation} />
     </div>

@@ -1,31 +1,20 @@
+import type { SidebarProps } from '../types';
 import './ChatPage.css';
 
-interface Conversation {
-  id: string;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  time: string;
-  unread?: number;
-  isOnline?: boolean;
-}
-
-interface SidebarProps {
-  conversations: Conversation[];
-  selectedConversation: Conversation | null;
-  onSelectConversation: (conversation: Conversation) => void;
-}
-
-function Sidebar({ conversations, selectedConversation, onSelectConversation }: SidebarProps) {
+function Sidebar({ conversations, selectedConversation, onSelectConversation, onLogout }: SidebarProps) {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
         <div className="app-logo">
           <span className="app-name">ChatFlow</span>
         </div>
+        <button className="logout-button" onClick={onLogout} title="Đăng xuất">
+          <i className="bi bi-box-arrow-right"></i>
+        </button>
       </div>
 
       <div className="search-box">
+        <i className="bi bi-search search-icon"></i>
         <input type="text" placeholder="Tìm kiếm tin nhắn..." />
       </div>
 
@@ -42,6 +31,7 @@ function Sidebar({ conversations, selectedConversation, onSelectConversation }: 
               <span className="avatar-text">{conversation.avatar}</span>
               {conversation.isOnline && <span className="online-dot"></span>}
             </div>
+            
             <div className="conversation-info">
               <div className="conversation-header">
                 <span className="conversation-name">{conversation.name}</span>

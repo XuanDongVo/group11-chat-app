@@ -1,26 +1,6 @@
 import { useState } from 'react';
+import type { ChatAreaProps, Message } from '../types';
 import './ChatPage.css';
-
-interface Conversation {
-  id: string;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  time: string;
-  unread?: number;
-  isOnline?: boolean;
-}
-
-interface Message {
-  id: string;
-  text: string;
-  time: string;
-  isMine: boolean;
-}
-
-interface ChatAreaProps {
-  conversation: Conversation | null;
-}
 
 function ChatArea({ conversation }: ChatAreaProps) {
   const [messages] = useState<Message[]>([
