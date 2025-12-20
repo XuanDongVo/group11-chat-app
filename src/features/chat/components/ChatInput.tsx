@@ -11,7 +11,7 @@ export default function ChatInput() {
       {/* input */}
       <input
         className="chat-input__field"
-        placeholder="Message..."
+        placeholder="Gửi tin nhắn đến ..."
       />
 
       {/* actions */}

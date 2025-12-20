@@ -12,7 +12,7 @@ export default function ChatLayout() {
         <ChatHeader
           avatar="https://i.pravatar.cc/100"
           name="Trí Đức"
-          status="online"
+          status="Đang hoạt động"
         />
 
         <MessageList />
