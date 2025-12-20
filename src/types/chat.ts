@@ -17,4 +17,6 @@ export interface SidebarItemProps {
   name: string;
   lastMessage: string;
   active?: boolean;
+  time?: string;
+  unread?: number;
 }

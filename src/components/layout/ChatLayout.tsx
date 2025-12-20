@@ -5,18 +5,20 @@ import ChatHeader from "../../features/chat/components/ChatHeader";
 
 export default function ChatLayout() {
   return (
-    <div className="chat-app">
+    <div className="chat-layout">
       <Sidebar />
 
-      <div className="chat-main">
+      <main className="chat-main">
         <ChatHeader
-          avatar="https://i.pravatar.cc/40"
+          avatar="https://i.pravatar.cc/100"
           name="Trí Đức"
           status="online"
         />
+
         <MessageList />
+
         <ChatInput />
-      </div>
+      </main>
     </div>
   );
 }

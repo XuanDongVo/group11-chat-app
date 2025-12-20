@@ -1,4 +1,4 @@
-import { Send, Smile, Image, Mic } from "lucide-react";
+import { Send, Smile, Image, Link } from "lucide-react";
 
 export default function ChatInput() {
   return (
@@ -16,7 +16,7 @@ export default function ChatInput() {
 
       {/* actions */}
       <button className="chat-input__icon">
-        <Mic size={20} />
+        <Link size={20} />
       </button>
 
       <button className="chat-input__icon">
