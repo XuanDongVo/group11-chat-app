@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { wsService } from '../../services/websocket';
 import type { LoginProps, ServerMessage } from '../../types';
 import '../../styles/Auth.css';
+import { useNavigate } from 'react-router-dom';
 
-function Login({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
+function Login({ onLoginSuccess }: Omit<LoginProps, 'onSwitchToRegister'>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Kết nối WebSocket khi component mount
@@ -34,6 +36,7 @@ function Login({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
         if (message.status === 'success') {
           console.log('Đăng nhập thành công:', message.data);
           onLoginSuccess();
+          navigate('/chat');
         } else {
           setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
         }
@@ -118,7 +121,11 @@ function Login({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
         </form>
         <p className="auth-switch">
           Chưa có tài khoản?{' '}
-          <button onClick={onSwitchToRegister} className="switch-button" disabled={loading}>
+          <button
+            onClick={() => navigate('/register')}
+            className="switch-button"
+            disabled={loading}
+          >
             Đăng ký ngay
           </button>
         </p>
