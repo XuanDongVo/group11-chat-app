@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { wsService } from '../../services/websocket';
 import type { LoginProps, ServerMessage } from '../../types';
-import './Auth.css';
+import '../../styles/Auth.css';
 
 function Login({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
   const [username, setUsername] = useState('');
