@@ -1,8 +1,5 @@
 import { LogOut, User } from "lucide-react";
 import type { HeaderProps } from "../../types/user";
-
-
-
 export default function Header({ username, onLogout }: HeaderProps) {
   return (
     <header className="app-header">

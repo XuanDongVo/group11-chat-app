@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { wsService } from '../../services/websocket';
 import type { RegisterProps, ServerMessage } from '../../types';
-import './Auth.css';
+import '../../styles/Auth.css';
 
-function Register({ onSwitchToLogin, onRegisterSuccess }: RegisterProps) {
+function Register({ onRegisterSuccess }: Omit<RegisterProps, 'onSwitchToLogin'>) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -37,6 +39,7 @@ function Register({ onSwitchToLogin, onRegisterSuccess }: RegisterProps) {
         if (message.status === 'success') {
           console.log('Đăng ký thành công:', message.data);
           onRegisterSuccess();
+          navigate('/login');
         } else {
           setError('Đăng ký thất bại. Vui lòng thử lại.');
         }
@@ -154,7 +157,11 @@ function Register({ onSwitchToLogin, onRegisterSuccess }: RegisterProps) {
         </form>
         <p className="auth-switch">
           Đã có tài khoản?{' '}
-          <button onClick={onSwitchToLogin} className="switch-button" disabled={loading}>
+          <button
+            onClick={() => navigate('/login')}
+            className="switch-button"
+            disabled={loading}
+          >
             Đăng nhập
           </button>
         </p>
