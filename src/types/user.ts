@@ -1,4 +1,7 @@
-export type HeaderProps = {
+import type { EffectType } from "./index";
+
+export interface HeaderProps {
   username: string;
-  onLogout?: () => void;
-};
+  onLogout: () => void;
+  onChangeEffect: (effect: EffectType) => void;
+}
