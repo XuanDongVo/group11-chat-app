@@ -38,3 +38,20 @@ export interface RegisterProps {
 
 // Message Handler Type
 export type MessageHandler = (message: ServerMessage) => void;
+
+export type EffectType =
+  | "snow"
+  | "confetti"
+  | "stars"
+  | "hearts"
+  | "rain"
+  | null;
+
+export interface EffectsLayerProps {
+  effect: EffectType;
+}
+
+export interface EffectPickerProps {
+  onSelect: (effect: EffectType) => void;
+  activeEffect: string | null;
+}
