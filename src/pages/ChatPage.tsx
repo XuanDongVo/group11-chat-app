@@ -1,17 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ChatLayout from "../components/layout/ChatLayout";
 import Header from "../components/layout/Header";
 import EffectsLayer from "../components/effects/EffectsLayer";
 import type { EffectType } from "../types";
 
-function ChatPage() {
+interface ChatPageProps {
+  onLogout?: () => void;
+}
+
+function ChatPage({ onLogout }: ChatPageProps) {
   const [effect, setEffect] = useState<EffectType>("snow");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+    navigate("/login");
+  };
 
   return (
     <>
       <Header
         username="User"
-        onLogout={() => {}}
+        onLogout={handleLogout}
         onChangeEffect={setEffect}
       />
 
