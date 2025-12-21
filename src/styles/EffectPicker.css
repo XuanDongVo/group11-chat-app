@@ -1,0 +1,73 @@
+.effect-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.effect-picker button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.effect-picker button:hover {
+  opacity: 1;
+}
+
+.effect-wrapper {
+  position: relative;
+}
+
+.effect-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.effect-trigger:hover {
+  background: #f5f5f5;
+}
+
+.effect-trigger:active {
+  transform: scale(0.97);
+}
+
+.effect-picker {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px;
+
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+}
+
+.effect-picker button.active {
+  color: red;
+}
+
+.effect-picker button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.effect-picker button:hover {
+  background: #f3f3f3;
+  border-radius: 6px;
+}
+
