@@ -1,7 +1,10 @@
+import { useState } from "react";
 import SidebarItem from "../../features/chat/components/SidebarItem";
-import { MessageSquare, Menu, Search } from "lucide-react";
+import { MessageSquare, Menu, Search, Plus } from "lucide-react";
+import CreateRoomModal from "../room/CreateRoomModal";
 
 export default function Sidebar() {
+  const [openCreate, setOpenCreate] = useState(false);
   return (
     <aside className="chat-sidebar">
       {/* Header */}
@@ -12,6 +15,19 @@ export default function Sidebar() {
         </div>
         <Menu size={20} />
       </div>
+
+      <button
+        className="sidebar-create-btn"
+        title="Tạo phòng mới"
+        onClick={() => setOpenCreate(true)}
+      >
+        <Plus size={18} />
+      </button>
+
+      <CreateRoomModal
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+      />
 
       {/* Search */}
       <div className="sidebar-search">
