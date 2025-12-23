@@ -36,6 +36,39 @@ export interface RegisterProps {
   onRegisterSuccess: () => void;
 }
 
+export interface ChatPageProps {
+  onLogout: () => void;
+}
+
+// Chat Related Interfaces
+export interface Conversation {
+  id: string;
+  name: string;
+  avatar: string;
+  lastMessage: string;
+  time: string;
+  unread?: number;
+  isOnline?: boolean;
+}
+
+export interface Message {
+  id: string;
+  text: string;
+  time: string;
+  isMine: boolean;
+}
+
+export interface SidebarProps {
+  conversations: Conversation[];
+  selectedConversation: Conversation | null;
+  onSelectConversation: (conversation: Conversation) => void;
+  onLogout: () => void;
+}
+
+export interface ChatAreaProps {
+  conversation: Conversation | null;
+}
+
 // Message Handler Type
 export type MessageHandler = (message: ServerMessage) => void;
 

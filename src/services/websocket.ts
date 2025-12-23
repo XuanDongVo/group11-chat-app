@@ -152,6 +152,25 @@ class WebSocketService {
     this.send(message);
   }
 
+  logout() {
+    const message: ChatMessage = {
+      action: 'onchat',
+      data: {
+        event: 'LOGOUT',
+        data: {}
+      }
+    };
+    this.send(message);
+    
+    // Clear saved data
+    localStorage.removeItem('RE_LOGIN_CODE');
+    localStorage.removeItem('username');
+    
+    // Disconnect WebSocket
+    this.shouldReconnect = false;
+    this.disconnect();
+  }
+
   onMessage(handler: MessageHandler) {
     this.messageHandlers.push(handler);
   }

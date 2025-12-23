@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Login from "../components/Auth/Login";
-import Register from "../components/Auth/Register";
+import Login from "../features/auth/Login";
+import Register from "../features/auth/Register";
 import ChatPage from "../pages/ChatPage";
 
 const AppRouter = () => (
