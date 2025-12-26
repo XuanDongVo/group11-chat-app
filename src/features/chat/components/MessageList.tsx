@@ -1,11 +1,20 @@
 import MessageBubble from "./MessageBubble";
+import type { ChatMessage } from "../../../types/chat";
 
-export default function MessageList() {
+export default function MessageList({
+  messages,
+}: {
+  messages: ChatMessage[];
+}) {
   return (
     <div className="chat-messages">
-      <MessageBubble text="Chào bạn nha !!" mine />
-      <MessageBubble text="đẹp trai quá anh ơii" mine />
-      <MessageBubble text="bạn nhắn gì tui zaa nhắn lại i chứ hong hiện tin nhắn thiệt =)))" />
+      {messages.map((msg, idx) => (
+        <MessageBubble
+          key={idx}
+          text={msg.content}
+          mine={msg.from === "me"} 
+        />
+      ))}
     </div>
   );
 }

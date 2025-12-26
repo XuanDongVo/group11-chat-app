@@ -11,6 +11,13 @@ export interface MessageBubbleProps {
   mine?: boolean;
 }
 
+export interface ChatMessage {
+  from: string;
+  to: string;
+  content: string;
+  time?: string;
+}
+
 // Sidebar
 export interface SidebarItemProps {
   avatar: string;
