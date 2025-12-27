@@ -171,6 +171,17 @@ class WebSocketService {
     this.disconnect();
   }
 
+    getUserList() {
+    const message: ChatMessage = {
+      action: "onchat",
+      data: {
+        event: "GET_USER_LIST",
+        data: {},
+      },
+    };
+    this.send(message);
+  }
+
   onMessage(handler: MessageHandler) {
     this.messageHandlers.push(handler);
   }

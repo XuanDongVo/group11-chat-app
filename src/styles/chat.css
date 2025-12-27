@@ -236,6 +236,7 @@
 .message {
   max-width: 60%;
   display: flex;
+  justify-content: flex-start;
 }
 
 .message__description {
@@ -248,8 +249,14 @@
   margin: 0;
 }
 
+.message.mine .message__description {
+  background: #0d6efd; 
+  color: #fff;
+}
+
 .message.mine {
   align-self: flex-end;
+  justify-content: flex-end; 
 }
 
 .message.mine .message__description {

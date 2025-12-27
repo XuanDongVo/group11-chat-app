@@ -2,12 +2,26 @@ import { useState } from "react";
 import SidebarItem from "../../features/chat/components/SidebarItem";
 import { MessageSquare, Menu, Search, Plus } from "lucide-react";
 import CreateRoomModal from "../room/CreateRoomModal";
+import type { SidebarItemProps } from "../../types/chat";
 
-export default function Sidebar() {
+interface SidebarProps {
+  userList: SidebarItemProps[];
+  loading: boolean;
+  currentUser: string | null;
+  onSelectUser: (username: string) => void;
+}
+
+export default function Sidebar({
+  userList,
+  loading,
+  currentUser,
+  onSelectUser,
+}: SidebarProps) {
   const [openCreate, setOpenCreate] = useState(false);
+
   return (
     <aside className="chat-sidebar">
-      {/* Header */}
+      {/* Header – GIỮ NGUYÊN */}
       <div className="sidebar-header">
         <div className="sidebar-title">
           <MessageSquare size={20} />
@@ -16,6 +30,7 @@ export default function Sidebar() {
         <Menu size={20} />
       </div>
 
+      {/* Button tạo phòng – GIỮ NGUYÊN */}
       <button
         className="sidebar-create-btn"
         title="Tạo phòng mới"
@@ -29,42 +44,31 @@ export default function Sidebar() {
         onClose={() => setOpenCreate(false)}
       />
 
-      {/* Search */}
+      {/* Search – GIỮ NGUYÊN */}
       <div className="sidebar-search">
         <Search size={16} />
         <input placeholder="Tìm kiếm tin nhắn..." />
       </div>
 
-      {/* List */}
-      <SidebarItem
-        avatar="https://i.pravatar.cc/40?img=5"
-        name="Trí Đức"
-        lastMessage="Hẹn gặp lại bạn nhé!"
-        time="2 phút"
-        unread={3}
-        active
-      />
+      {/* List – CHỈ THAY PHẦN NÀY */}
+      {loading && <div style={{ padding: 12 }}>Đang tải...</div>}
 
-      <SidebarItem
-        avatar="https://i.pravatar.cc/40?img=8"
-        name="Công Vinh"
-        lastMessage="Cảm ơn bạn nhiều"
-        time="15 phút"
-      />
-
-      <SidebarItem
-        avatar="https://i.pravatar.cc/40?img=11"
-        name="Xuân Đông"
-        lastMessage="Đã gửi file báo cáo"
-        time="1 giờ"
-      />
-
-      <SidebarItem
-        avatar="https://i.pravatar.cc/40?img=13"
-        name="Minh Thư"
-        lastMessage="Ok bạn ơi"
-        time="3 giờ"
-      />
+      {!loading &&
+        userList.map((user) => (
+          <div
+            key={user.name}
+            onClick={() => onSelectUser(user.name)}
+          >
+            <SidebarItem
+              avatar={user.avatar || "https://i.pravatar.cc/40"}
+              name={user.name}
+              lastMessage={user.lastMessage}
+              time={user.time}
+              unread={user.unread}
+              active={currentUser === user.name}
+            />
+          </div>
+        ))}
     </aside>
   );
 }
