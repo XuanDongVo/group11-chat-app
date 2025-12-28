@@ -13,6 +13,8 @@ interface ChatLayoutProps {
   loadingMessages: boolean;
 
   selectUser: (username: string) => void;
+
+  sendToUser: (to: string, mes: string) => void;
 }
 
 export default function ChatLayout({
@@ -22,6 +24,7 @@ export default function ChatLayout({
   messages,
   loadingMessages,
   selectUser,
+  sendToUser,
 }: ChatLayoutProps) {
   return (
     <div className="chat-layout">
@@ -37,10 +40,7 @@ export default function ChatLayout({
       <main className="chat-main">
         {currentUser ? (
           <>
-            <ChatHeader
-              avatar="https://i.pravatar.cc/100"
-              name={currentUser}
-            />
+            <ChatHeader avatar="https://i.pravatar.cc/100" name={currentUser} />
 
             {loadingMessages ? (
               <div style={{ padding: 16 }}>Đang tải tin nhắn...</div>
@@ -48,12 +48,15 @@ export default function ChatLayout({
               <MessageList messages={messages} />
             )}
 
-            <ChatInput />
+            <ChatInput
+              onSend={(text) => {
+                if (!currentUser) return;
+                sendToUser(currentUser, text);
+              }}
+            />
           </>
         ) : (
-          <div style={{ padding: 16 }}>
-            Chọn một cuộc trò chuyện để bắt đầu
-          </div>
+          <div style={{ padding: 16 }}>Chọn một cuộc trò chuyện để bắt đầu</div>
         )}
       </main>
     </div>

@@ -14,7 +14,7 @@ export default function MessageList({
         <MessageBubble
           key={idx}
           text={msg.content}
-          mine={msg.from !== currentUser}
+          mine={msg.from === currentUser}
           // mine={msg.from === myUsername}
         />
       ))}
