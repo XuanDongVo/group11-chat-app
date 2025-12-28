@@ -15,11 +15,11 @@ export interface MessageBubbleProps {
 export interface ChatMessage {
   from: string;
   to: string;
-  type: "text" | "image" | "text_image";
+  type: "text" | "image" | "text_image" | "audio";
   text?: string;
   image?: string;
+  audio?: string;
   time?: string;
-  isAudio?: boolean;
 }
 
 // Sidebar

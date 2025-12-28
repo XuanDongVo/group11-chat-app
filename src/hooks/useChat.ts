@@ -3,17 +3,22 @@ import { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "../services/WebSocketContext";
 import type { SidebarItemProps, ChatMessage } from "../types/chat";
 
+
 function parseContent(raw: string) {
   if (!raw) {
     return { type: "text" as const, text: "" };
   }
-
-  // ⚠️ REMOVE QUOTES + TRIM
   const normalized = raw.trim().replace(/^"(.*)"$/, "$1");
+
+  if (normalized.startsWith("[AUDIO]")) {
+    return {
+      type: "audio" as const,
+      audio: normalized.substring(7),
+    };
+  }
 
   if (normalized.startsWith("TEXT_IMAGE::")) {
     const payload = normalized.slice("TEXT_IMAGE::".length);
-
     const splitIndex = payload.indexOf("|");
     if (splitIndex === -1) {
       return {
@@ -21,10 +26,8 @@ function parseContent(raw: string) {
         text: EmojiUtils.decode(payload),
       };
     }
-
     const text = payload.slice(0, splitIndex);
     const image = payload.slice(splitIndex + 1);
-
     return {
       type: "text_image" as const,
       text: EmojiUtils.decode(text),
@@ -72,19 +75,14 @@ function normalizePeopleMessages(raw: any): ChatMessage[] {
 
   return list.map((m: any) => {
     const rawContent = m.mes ?? m.content ?? m.message ?? "";
-     const isAudio = rawContent.startsWith("[AUDIO]");
-    const content = isAudio 
-      ? rawContent.substring(7) // Remove [AUDIO] prefix
-      : EmojiUtils.decode(rawContent);
-
     const parsed = parseContent(rawContent);
-
     return {
       from: m.name ?? m.from ?? m.user ?? m.sender ?? "",
       to: m.to ?? m.receiver ?? "",
       type: parsed.type,
       text: parsed.text,
       image: parsed.image,
+      audio: parsed.audio,
       time: m.createAt ?? m.time ?? m.createdAt ?? m.created_at ?? m.date ?? "",
     };
   });

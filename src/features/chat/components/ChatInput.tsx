@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
-import { Send, Smile, Image, Link, Mic } from "lucide-react";
-import { Send, Smile, Image, Link, X } from "lucide-react";
+import { Send, Smile, Image, Link, Mic, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { EmojiUtils } from "../../../utils/EmojiUtils";
 import AudioRecorder from "./AudioRecorder";
@@ -9,7 +8,7 @@ import "../../../styles/ChatInput.css";
 export default function ChatInput({
   onSend,
 }: {
-  onSend: (text: string, isAudio?: boolean) => void;
+  onSend: (text: string) => void;
 }) {
   const [text, setText] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
@@ -55,7 +54,8 @@ export default function ChatInput({
   };
 
   const handleSendAudio = (audioBase64: string) => {
-    onSend(audioBase64, true);
+    // Thêm prefix để phân biệt loại audio
+    onSend(`[AUDIO]${audioBase64}`);
     setShowRecorder(false);
   };
 
@@ -107,15 +107,28 @@ export default function ChatInput({
   }
 
   return (
-    <div className="chat-input">
+    <div style={{ display: "flex", flexDirection: "column" }}>
       {showRecorder ? (
         <AudioRecorder
           onSendAudio={handleSendAudio}
           onCancel={() => setShowRecorder(false)}
         />
-      ) : (
-        <>
-          {/* emoji button */}
+      ) : (<>
+        {/* image preview */}
+        {imagePreview && (
+          <div className="chat-input-image-preview">
+            <img src={imagePreview} alt="preview" />
+            <button
+              type="button"
+              className="chat-input-remove-image"
+              onClick={removeImage}
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+        <div className="chat-input">
+          {/* emoji */}
           <button
             type="button"
             className="chat-input-emoji-btn"
@@ -123,135 +136,67 @@ export default function ChatInput({
           >
             <Smile size={20} />
           </button>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {/* image preview */}
-            {imagePreview && (
-              <div className="chat-input-image-preview">
-                <img src={imagePreview} alt="preview" />
-                <button
-                  type="button"
-                  className="chat-input-remove-image"
-                  onClick={removeImage}
-                >
-                  <X size={14} />
-                </button>
-              </div>
-            )}
-            <div className="chat-input">
 
+          {showEmoji && (
+            <div className="chat-input-emoji-picker">
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
 
-              {/* emoji */}
-              <button
-                type="button"
-                className="chat-input-emoji-btn"
-                onClick={() => setShowEmoji((v) => !v)}
-              >
-                <Smile size={20} />
-              </button>
-
-              {/* emoji picker */}
-              {showEmoji && (
-                <div className="chat-input-emoji-picker">
-                  <EmojiPicker
-                    onEmojiClick={handleEmojiClick}
-                    autoFocusSearch={false}
-                    height={360}
-                    width={320}
-                  />
-                </div>
-              )}
-              {showEmoji && (
-                <div className="chat-input-emoji-picker">
-                  <EmojiPicker onEmojiClick={handleEmojiClick} />
-                </div>
-              )}
-
-              {/* input */}
-              <input
-                ref={inputRef}
-                placeholder="Gửi tin nhắn..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                className="chat-input-field"
-              />
-              {/* input */}
-              <div className="chat-input">
-                <input
-                  ref={inputRef}
-                  className="chat-input-field"
-                  placeholder="Gửi tin nhắn..."
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                />
-              </div>
-
-              {/* link */}
-              <button
-                type="button"
-                className="chat-input-link-btn"
-              >
-                <Link size={20} />
-              </button>
-              {/* link (future) */}
-              <button type="button" className="chat-input-link-btn">
-                <Link size={20} />
-              </button>
-
-              {/* image */}
-              <button
-                type="button"
-                className="chat-input-link-btn"
-              >
-                <Image size={20} />
-              </button>
-
-              {/* mic button */}
-              <button
-                type="button"
-                className="chat-input-mic-btn"
-                onClick={() => setShowRecorder(true)}
-              >
-                <Mic size={20} />
-              </button>
-              {/* image */}
-              <button
-                type="button"
-                className="chat-input-link-btn"
-                onClick={handleImageClick}
-              >
-                <Image size={20} />
-              </button>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleImageSelect}
-              />
-
-              {/* send */}
-              <button
-                type="button"
-                onClick={handleSend}
-                className="chat-input-send-btn"
-              >
-                <Send size={18} />
-              </button>
-            </>
-      )}
-            {/* send */}
-            <button
-              type="button"
-              className="chat-input-send-btn"
-              onClick={handleSend}
-            >
-              <Send size={18} />
-            </button>
+          {/* input */}
+          <div className="chat-input">
+            <input
+              ref={inputRef}
+              className="chat-input-field"
+              placeholder="Gửi tin nhắn..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            />
           </div>
-        </div>
-      );
 
+          {/* link (future) */}
+          <button type="button" className="chat-input-link-btn">
+            <Link size={20} />
+          </button>
+
+          {/* image */}
+          <button
+            type="button"
+            className="chat-input-link-btn"
+            onClick={handleImageClick}
+          >
+            <Image size={20} />
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImageSelect}
+          />
+
+          {/* mic button */}
+          <button
+            type="button"
+            className="chat-input-mic-btn"
+            onClick={() => setShowRecorder(true)}
+          >
+            <Mic size={20} />
+          </button>
+
+          {/* send */}
+          <button
+            type="button"
+            className="chat-input-send-btn"
+            onClick={handleSend}
+          >
+            <Send size={18} />
+          </button>
+        </div>
+      </>
+      )}
+    </div>
+  );
 }
