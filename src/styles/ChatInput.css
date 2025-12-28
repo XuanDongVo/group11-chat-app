@@ -44,6 +44,24 @@
   background: #0b5cff !important;
 }
 
+.chat-input-mic-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #25d366 !important;
+  color: white;
+  transition: all 0.2s;
+}
+
+.chat-input-mic-btn:hover {
+  background: #1da851 !important;
+  transform: scale(1.05);
+}
+
 .chat-input-send-btn {
   display: flex;
   align-items: center;

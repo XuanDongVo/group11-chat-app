@@ -15,6 +15,7 @@ export default function MessageList({
           key={idx}
           text={msg.content}
           mine={msg.from === currentUser}
+          isAudio={msg.isAudio}
           // mine={msg.from === myUsername}
         />
       ))}
