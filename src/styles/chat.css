@@ -1,10 +1,39 @@
+.message__text_image {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.message__image--mb {
+  margin-bottom: 6px;
+}
+
+.message__text_image-text {
+  display: inline-block;
+  max-width: 320px;
+}
+.message__description--text_image {
+  max-width: 100%;
+  word-break: break-word;
+  white-space: pre-line;
+}
+
+.message__image {
+  max-width: 220px;
+  max-height: 220px;
+  border-radius: 10px;
+  margin-top: 6px;
+  margin-bottom: 4px;
+  display: block;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.chat-layout{
+.chat-layout {
   display: flex;
   height: calc(100vh - 56px);
   width: 100vw;
@@ -23,16 +52,14 @@
   min-width: 0;
 }
 
-
 /* Sidebar */
 .chat-sidebar__title {
   margin: 4px 0 12px;
   font-size: 16px;
 }
 
-
 .chat-sidebar {
-  width: 300px; 
+  width: 300px;
   min-width: 300px;
   background: white;
   border-right: 1px solid #eee;
@@ -48,7 +75,6 @@
   padding: 8px;
   border-radius: 10px;
   cursor: pointer;
-
 }
 
 .chat-item.active {
@@ -119,7 +145,7 @@
 }
 
 .chat-item.active {
-  background: #f3e8ff; 
+  background: #f3e8ff;
 }
 
 .chat-item__body {
@@ -172,14 +198,11 @@
   justify-content: space-between;
 }
 
-
 .chat-user {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-
-
 
 .chat-header__left {
   display: flex;
@@ -200,7 +223,7 @@
 
 .chat-header__info span {
   font-size: 12px;
-  color: #22c55e; 
+  color: #22c55e;
 }
 .chat-header__actions {
   display: flex;
@@ -250,20 +273,19 @@
 }
 
 .message.mine .message__description {
-  background: #0d6efd; 
+  background: #0d6efd;
   color: #fff;
 }
 
 .message.mine {
   align-self: flex-end;
-  justify-content: flex-end; 
+  justify-content: flex-end;
 }
 
 .message.mine .message__description {
   background: #0b5cff;
   color: white;
 }
-
 
 .chat-input {
   width: 100%;
@@ -318,7 +340,6 @@
   background: #094bcc;
 }
 
-
 .chat-input button {
   background: #0b5cff;
   color: white;
@@ -326,6 +347,3 @@
   border-radius: 50%;
   padding: 10px;
 }
-
-
-
