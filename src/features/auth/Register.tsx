@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { wsService } from '../../services/websocket';
 import type { RegisterProps, ServerMessage } from '../../types';
 import '../../styles/Auth.css';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from './authSlice';
+import type { AppDispatch } from '../../app/store';
 
 function Register({ onRegisterSuccess }: Omit<RegisterProps, 'onSwitchToLogin'>) {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -38,6 +42,15 @@ function Register({ onRegisterSuccess }: Omit<RegisterProps, 'onSwitchToLogin'>)
         setLoading(false);
         if (message.status === 'success') {
           console.log('Đăng ký thành công:', message.data);
+          
+          // Nếu có RE_LOGIN_CODE, lưu vào Redux (trường hợp tự động đăng nhập sau khi đăng ký)
+          if (message.data?.RE_LOGIN_CODE) {
+            dispatch(loginSuccess({
+              username: formData.username || (typeof message.data.user === 'string' ? message.data.user : ''),
+              reLoginCode: message.data.RE_LOGIN_CODE
+            }));
+          }
+          
           onRegisterSuccess();
           navigate('/login');
         } else {
@@ -54,7 +67,7 @@ function Register({ onRegisterSuccess }: Omit<RegisterProps, 'onSwitchToLogin'>)
     return () => {
       wsService.removeMessageHandler(messageHandler);
     };
-  }, [onRegisterSuccess]);
+  }, [onRegisterSuccess, navigate, dispatch, formData.username]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

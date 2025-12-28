@@ -3,13 +3,25 @@ import { wsService } from '../../services/websocket';
 import type { LoginProps, ServerMessage } from '../../types';
 import '../../styles/Auth.css';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from './authSlice';
+import type { AppDispatch } from '../../app/store';
 
 function Login({ onLoginSuccess }: Omit<LoginProps, 'onSwitchToRegister'>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() => {
+    // Kiểm tra error từ ProtectedRoute ngay khi khởi tạo
+    const savedError = localStorage.getItem('loginError');
+    if (savedError) {
+      localStorage.removeItem('loginError');
+      return savedError;
+    }
+    return '';
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     // Kết nối WebSocket khi component mount
@@ -35,6 +47,15 @@ function Login({ onLoginSuccess }: Omit<LoginProps, 'onSwitchToRegister'>) {
         setLoading(false);
         if (message.status === 'success') {
           console.log('Đăng nhập thành công:', message.data);
+          
+          // Lưu thông tin vào Redux store
+          if (message.data?.RE_LOGIN_CODE) {
+            dispatch(loginSuccess({
+              username: username || (typeof message.data.user === 'string' ? message.data.user : ''),
+              reLoginCode: message.data.RE_LOGIN_CODE
+            }));
+          }
+          
           onLoginSuccess();
           navigate('/chat');
         } else {
@@ -51,7 +72,7 @@ function Login({ onLoginSuccess }: Omit<LoginProps, 'onSwitchToRegister'>) {
     return () => {
       wsService.removeMessageHandler(messageHandler);
     };
-  }, [onLoginSuccess]);
+  }, [onLoginSuccess, navigate, dispatch, username]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
