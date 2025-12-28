@@ -23,6 +23,7 @@ export interface ServerMessage {
     [key: string]: unknown;
   };
   message?: string;
+  mes?: string;
 }
 
 // Component Props

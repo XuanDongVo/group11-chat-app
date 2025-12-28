@@ -16,6 +16,34 @@ class WebSocketService {
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
+        // Nếu đã có kết nối đang mở, không tạo mới
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          console.log('WebSocket already connected');
+          resolve();
+          return;
+        }
+
+        // Nếu đang kết nối, đợi kết nối hiện tại
+        if (this.ws && this.ws.readyState === WebSocket.CONNECTING) {
+          console.log('WebSocket is connecting, waiting...');
+          const checkInterval = setInterval(() => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+              clearInterval(checkInterval);
+              resolve();
+            } else if (!this.ws || this.ws.readyState === WebSocket.CLOSED || this.ws.readyState === WebSocket.CLOSING) {
+              clearInterval(checkInterval);
+              reject(new Error('Connection failed'));
+            }
+          }, 100);
+          return;
+        }
+
+        // Đóng kết nối cũ nếu có
+        if (this.ws) {
+          this.ws.close();
+          this.ws = null;
+        }
+
         this.ws = new WebSocket(WS_URL);
 
         this.ws.onopen = () => {
