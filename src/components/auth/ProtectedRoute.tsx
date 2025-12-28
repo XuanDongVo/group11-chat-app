@@ -98,7 +98,8 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
             }
           }, 5000);
 
-        } catch (error) {
+        } catch {
+          // Lỗi khi re-login, clear data và redirect
           localStorage.removeItem('RE_LOGIN_CODE');
           localStorage.removeItem('username');
           localStorage.removeItem('currentRoomId');

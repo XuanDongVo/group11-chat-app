@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatLayout from "../components/layout/ChatLayout";
 import { useChat } from "../hooks/useChat";
+import { useAutoReLogin } from "../hooks/useAutoReLogin";
 import Header from "../components/layout/Header";
 import EffectsLayer from "../components/effects/EffectsLayer";
 import type { EffectType } from "../types";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUsername, logout as logoutAction } from "../features/auth/authSlice";
+import { selectUsername, selectIsAuthenticated, logout as logoutAction } from "../features/auth/authSlice";
 import { wsService } from "../services/websocket";
 import type { AppDispatch } from "../app/store";
 
@@ -20,6 +21,17 @@ function ChatPage({ onLogout }: ChatPageProps) {
   const dispatch = useDispatch<AppDispatch>();
   const chat = useChat();
   const username = useSelector(selectUsername);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  
+  // Tự động re-login sau 15s không hoạt động để duy trì session
+  useAutoReLogin();
+
+  // Redirect về login khi logout (từ auto re-login thất bại)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Phục hồi room/cuộc trò chuyện hiện tại sau khi F5
   useEffect(() => {
