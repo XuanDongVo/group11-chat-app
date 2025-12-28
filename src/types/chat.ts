@@ -7,7 +7,7 @@ export interface ChatHeaderProps {
 
 // Message
 export interface MessageBubbleProps {
-  text: string;
+  message: ChatMessage;
   mine?: boolean;
   isAudio?: boolean;
 }
@@ -15,9 +15,11 @@ export interface MessageBubbleProps {
 export interface ChatMessage {
   from: string;
   to: string;
-  content: string;
+  type: "text" | "image" | "text_image" | "audio";
+  text?: string;
+  image?: string;
+  audio?: string;
   time?: string;
-  isAudio?: boolean;
 }
 
 // Sidebar
