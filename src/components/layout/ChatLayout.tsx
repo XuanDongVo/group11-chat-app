@@ -2,20 +2,8 @@ import Sidebar from "./Sidebar";
 import ChatHeader from "../../features/chat/components/ChatHeader";
 import MessageList from "../../features/chat/components/MessageList";
 import ChatInput from "../../features/chat/components/ChatInput";
-import type { ChatMessage, SidebarItemProps } from "../../types/chat";
 
-interface ChatLayoutProps {
-  userList: SidebarItemProps[];
-  loadingUsers: boolean;
-
-  currentUser: string | null;
-  messages: ChatMessage[];
-  loadingMessages: boolean;
-
-  selectUser: (username: string) => void;
-
-  sendToUser: (to: string, mes: string) => void;
-}
+import type { ChatLayoutProps } from "../../types/chat";
 
 export default function ChatLayout({
   userList,

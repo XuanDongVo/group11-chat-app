@@ -1,3 +1,4 @@
+import { EmojiUtils } from "../utils/EmojiUtils";
 import { useEffect, useState, useRef  } from "react";
 import { useWebSocket } from "../services/WebSocketContext";
 import type { SidebarItemProps, ChatMessage } from "../types/chat";
@@ -22,7 +23,7 @@ function normalizePeopleMessages(raw: any): ChatMessage[] {
   return list.map((m: any) => ({
     from: m.name ?? m.from ?? m.user ?? m.sender ?? "",
     to: m.to ?? m.receiver ?? "",
-    content: m.mes ?? m.content ?? m.message ?? "",
+    content: EmojiUtils.decode(m.mes ?? m.content ?? m.message ?? ""),
     time: m.createAt ?? m.time ?? m.createdAt ?? m.created_at ?? m.date ?? "",
   }));
 }

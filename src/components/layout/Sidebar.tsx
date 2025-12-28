@@ -2,14 +2,8 @@ import { useState } from "react";
 import SidebarItem from "../../features/chat/components/SidebarItem";
 import { MessageSquare, Menu, Search, Plus } from "lucide-react";
 import CreateRoomModal from "../room/CreateRoomModal";
-import type { SidebarItemProps } from "../../types/chat";
 
-interface SidebarProps {
-  userList: SidebarItemProps[];
-  loading: boolean;
-  currentUser: string | null;
-  onSelectUser: (username: string) => void;
-}
+import type { SidebarProps } from "../../types/chat";
 
 export default function Sidebar({
   userList,

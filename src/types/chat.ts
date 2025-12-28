@@ -27,3 +27,21 @@ export interface SidebarItemProps {
   time?: string;
   unread?: number;
 }
+
+// Sidebar Props
+export interface SidebarProps {
+  userList: SidebarItemProps[];
+  loading: boolean;
+  currentUser: string | null;
+  onSelectUser: (username: string) => void;
+}
+
+// ChatLayout Props
+export interface ChatLayoutProps {
+  userList: SidebarItemProps[];
+  loadingUsers: boolean;
+  currentUser: string | null;
+  messages: ChatMessage[];
+  loadingMessages: boolean;
+  selectUser: (username: string) => void;
+}

@@ -1,43 +1,93 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Send, Smile, Image, Link } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
+import { EmojiUtils } from "../../../utils/EmojiUtils";
+import "../../../styles/ChatInput.css";
+import * as emoji from "emoji-dictionary";
 
-export default function ChatInput({ onSend }: { onSend: (text: string) => void }) {
+export default function ChatInput({
+  onSend,
+}: {
+  onSend: (text: string) => void;
+}) {
   const [text, setText] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
 
   const handleSend = () => {
     const value = text.trim();
     if (!value) return;
-    onSend(value);
+
+    const encodedText = EmojiUtils.encode(value);
+    onSend(encodedText);
+
     setText("");
+    setShowEmoji(false);
+  };
+
+  const handleEmojiClick = (emojiData: any) => {
+    const name = emoji.getName(emojiData.emoji);
+    console.log("Selected emoji:", name);
+    setText((prev) => prev + " " + emojiData.emoji + " ");
+    inputRef.current?.focus();
   };
 
   return (
     <div className="chat-input">
-      {/* emoji */}
-      <button className="chat-input__icon" type="button">
+      {/* emoji button */}
+      <button
+        type="button"
+        className="chat-input-emoji-btn"
+        onClick={() => setShowEmoji((v) => !v)}
+      >
         <Smile size={20} />
       </button>
 
+      {/* emoji picker */}
+      {showEmoji && (
+        <div className="chat-input-emoji-picker">
+          <EmojiPicker
+            onEmojiClick={handleEmojiClick}
+            autoFocusSearch={false}
+            height={360}
+            width={320}
+          />
+        </div>
+      )}
+
       {/* input */}
       <input
-        className="chat-input__field"
-        placeholder="Gửi tin nhắn đến ..."
+        ref={inputRef}
+        placeholder="Gửi tin nhắn..."
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        className="chat-input-field"
       />
 
-      {/* actions */}
-      <button className="chat-input__icon" type="button">
+      {/* link */}
+      <button
+        type="button"
+        className="chat-input-link-btn"
+      >
         <Link size={20} />
       </button>
 
-      <button className="chat-input__icon" type="button">
+      {/* image */}
+      <button
+        type="button"
+        className="chat-input-link-btn"
+      >
         <Image size={20} />
       </button>
 
       {/* send */}
-      <button className="chat-input__send" type="button" onClick={handleSend}>
+      <button
+        type="button"
+        onClick={handleSend}
+        className="chat-input-send-btn"
+      >
         <Send size={18} />
       </button>
     </div>
