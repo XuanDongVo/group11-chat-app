@@ -287,6 +287,51 @@
   color: white;
 }
 
+/* Audio Message Styles */
+.message--audio .message__description {
+  padding: 0;
+  background: transparent;
+}
+
+.message__audio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 18px;
+  background: #eaeaea;
+  min-width: 200px;
+}
+
+.message.mine .message__audio {
+  background: #0b5cff;
+}
+
+.message__audio .audio-icon {
+  color: #666;
+  flex-shrink: 0;
+}
+
+.message.mine .message__audio .audio-icon {
+  color: white;
+}
+
+.message__audio .audio-player {
+  flex: 1;
+  height: 32px;
+  outline: none;
+}
+
+.message__audio .audio-player::-webkit-media-controls-panel {
+  background: transparent;
+}
+
+.message.mine .message__audio .audio-player::-webkit-media-controls-current-time-display,
+.message.mine .message__audio .audio-player::-webkit-media-controls-time-remaining-display {
+  color: white;
+}
+
+
 .chat-input {
   width: 100%;
   /* max-width: 900px; */

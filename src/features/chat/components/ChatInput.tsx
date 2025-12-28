@@ -1,16 +1,19 @@
 import { useState, useRef } from "react";
+import { Send, Smile, Image, Link, Mic } from "lucide-react";
 import { Send, Smile, Image, Link, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { EmojiUtils } from "../../../utils/EmojiUtils";
+import AudioRecorder from "./AudioRecorder";
 import "../../../styles/ChatInput.css";
 
 export default function ChatInput({
   onSend,
 }: {
-  onSend: (text: string) => void;
+  onSend: (text: string, isAudio?: boolean) => void;
 }) {
   const [text, setText] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
+  const [showRecorder, setShowRecorder] = useState(false);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -51,7 +54,10 @@ export default function ChatInput({
     setShowEmoji(false);
   };
 
-
+  const handleSendAudio = (audioBase64: string) => {
+    onSend(audioBase64, true);
+    setShowRecorder(false);
+  };
 
   // EMOJI
   const handleEmojiClick = (emojiData: any) => {
@@ -101,82 +107,151 @@ export default function ChatInput({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      {/* image preview */}
-      {imagePreview && (
-        <div className="chat-input-image-preview">
-          <img src={imagePreview} alt="preview" />
+    <div className="chat-input">
+      {showRecorder ? (
+        <AudioRecorder
+          onSendAudio={handleSendAudio}
+          onCancel={() => setShowRecorder(false)}
+        />
+      ) : (
+        <>
+          {/* emoji button */}
           <button
             type="button"
-            className="chat-input-remove-image"
-            onClick={removeImage}
+            className="chat-input-emoji-btn"
+            onClick={() => setShowEmoji((v) => !v)}
           >
-            <X size={14} />
+            <Smile size={20} />
           </button>
-        </div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {/* image preview */}
+            {imagePreview && (
+              <div className="chat-input-image-preview">
+                <img src={imagePreview} alt="preview" />
+                <button
+                  type="button"
+                  className="chat-input-remove-image"
+                  onClick={removeImage}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+            <div className="chat-input">
+
+
+              {/* emoji */}
+              <button
+                type="button"
+                className="chat-input-emoji-btn"
+                onClick={() => setShowEmoji((v) => !v)}
+              >
+                <Smile size={20} />
+              </button>
+
+              {/* emoji picker */}
+              {showEmoji && (
+                <div className="chat-input-emoji-picker">
+                  <EmojiPicker
+                    onEmojiClick={handleEmojiClick}
+                    autoFocusSearch={false}
+                    height={360}
+                    width={320}
+                  />
+                </div>
+              )}
+              {showEmoji && (
+                <div className="chat-input-emoji-picker">
+                  <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
+              )}
+
+              {/* input */}
+              <input
+                ref={inputRef}
+                placeholder="Gửi tin nhắn..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                className="chat-input-field"
+              />
+              {/* input */}
+              <div className="chat-input">
+                <input
+                  ref={inputRef}
+                  className="chat-input-field"
+                  placeholder="Gửi tin nhắn..."
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                />
+              </div>
+
+              {/* link */}
+              <button
+                type="button"
+                className="chat-input-link-btn"
+              >
+                <Link size={20} />
+              </button>
+              {/* link (future) */}
+              <button type="button" className="chat-input-link-btn">
+                <Link size={20} />
+              </button>
+
+              {/* image */}
+              <button
+                type="button"
+                className="chat-input-link-btn"
+              >
+                <Image size={20} />
+              </button>
+
+              {/* mic button */}
+              <button
+                type="button"
+                className="chat-input-mic-btn"
+                onClick={() => setShowRecorder(true)}
+              >
+                <Mic size={20} />
+              </button>
+              {/* image */}
+              <button
+                type="button"
+                className="chat-input-link-btn"
+                onClick={handleImageClick}
+              >
+                <Image size={20} />
+              </button>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleImageSelect}
+              />
+
+              {/* send */}
+              <button
+                type="button"
+                onClick={handleSend}
+                className="chat-input-send-btn"
+              >
+                <Send size={18} />
+              </button>
+            </>
       )}
-      <div className="chat-input">
-
-
-        {/* emoji */}
-        <button
-          type="button"
-          className="chat-input-emoji-btn"
-          onClick={() => setShowEmoji((v) => !v)}
-        >
-          <Smile size={20} />
-        </button>
-
-        {showEmoji && (
-          <div className="chat-input-emoji-picker">
-            <EmojiPicker onEmojiClick={handleEmojiClick} />
+            {/* send */}
+            <button
+              type="button"
+              className="chat-input-send-btn"
+              onClick={handleSend}
+            >
+              <Send size={18} />
+            </button>
           </div>
-        )}
-
-        {/* input */}
-        <div className="chat-input">
-          <input
-            ref={inputRef}
-            className="chat-input-field"
-            placeholder="Gửi tin nhắn..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          />
         </div>
-
-        {/* link (future) */}
-        <button type="button" className="chat-input-link-btn">
-          <Link size={20} />
-        </button>
-
-        {/* image */}
-        <button
-          type="button"
-          className="chat-input-link-btn"
-          onClick={handleImageClick}
-        >
-          <Image size={20} />
-        </button>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          hidden
-          onChange={handleImageSelect}
-        />
-
-        {/* send */}
-        <button
-          type="button"
-          className="chat-input-send-btn"
-          onClick={handleSend}
-        >
-          <Send size={18} />
-        </button>
-      </div>
-    </div>
-  );
+      );
 
 }

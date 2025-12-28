@@ -9,6 +9,7 @@ export interface ChatHeaderProps {
 export interface MessageBubbleProps {
   message: ChatMessage;
   mine?: boolean;
+  isAudio?: boolean;
 }
 
 export interface ChatMessage {
@@ -18,6 +19,7 @@ export interface ChatMessage {
   text?: string;
   image?: string;
   time?: string;
+  isAudio?: boolean;
 }
 
 // Sidebar
@@ -46,4 +48,5 @@ export interface ChatLayoutProps {
   messages: ChatMessage[];
   loadingMessages: boolean;
   selectUser: (username: string) => void;
+  sendToUser: (username: string, message: string, isAudio?: boolean) => void;
 }

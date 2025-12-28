@@ -72,6 +72,10 @@ function normalizePeopleMessages(raw: any): ChatMessage[] {
 
   return list.map((m: any) => {
     const rawContent = m.mes ?? m.content ?? m.message ?? "";
+     const isAudio = rawContent.startsWith("[AUDIO]");
+    const content = isAudio 
+      ? rawContent.substring(7) // Remove [AUDIO] prefix
+      : EmojiUtils.decode(rawContent);
 
     const parsed = parseContent(rawContent);
 
@@ -167,7 +171,10 @@ export function useChat() {
   };
 
   // (tuỳ bạn dùng sau) gửi tin nhắn người-người theo sheet
-  const sendToUser = (to: string, mes: string) => {
+  const sendToUser = (to: string, mes: string, isAudio?: boolean) => {
+    // Nếu là audio, thêm prefix để dễ nhận biết khi nhận về
+    const content = isAudio ? `[AUDIO]${mes}` : mes;
+    
     send({
       action: "onchat",
       data: {
@@ -175,7 +182,7 @@ export function useChat() {
         data: {
           type: "people",
           to,
-          mes,
+          mes: content,
         },
       },
     });
