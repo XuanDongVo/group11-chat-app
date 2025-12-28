@@ -1,0 +1,64 @@
+.chat-input button {
+  background: unset;
+}
+
+.chat-input-emoji-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #6b7280;
+  background: #0b5cff !important;
+}
+
+.chat-input-emoji-picker {
+  position: absolute;
+  bottom: 3vw;
+  left: 14vw;
+  z-index: 100;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.chat-input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #f3f4f6;
+  font-size: 14px;
+}
+
+.chat-input-link-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #0b5cff !important;
+}
+
+.chat-input-send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  cursor: pointer;
+  background: #0b5cff !important;
+}
+
+/* Fix emoji picker focus/border */
+.emoji-picker-react button {
+  all: unset;
+  cursor: pointer;
+}
+.epr-emoji:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
