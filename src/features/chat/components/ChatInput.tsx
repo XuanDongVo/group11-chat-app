@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { Send, Smile, Image, Link } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
-import * as emoji from "emoji-dictionary";
+import { EmojiUtils } from "../../../utils/EmojiUtils";
 import "../../../styles/ChatInput.css";
+import * as emoji from "emoji-dictionary";
 
 export default function ChatInput({
   onSend,
@@ -13,15 +14,23 @@ export default function ChatInput({
   const [showEmoji, setShowEmoji] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+
   const handleSend = () => {
     const value = text.trim();
     if (!value) return;
-    onSend(value);
+
+    const encodedText = EmojiUtils.encode(value);
+    onSend(encodedText);
+
     setText("");
+    setShowEmoji(false);
   };
 
   const handleEmojiClick = (emojiData: any) => {
-   
+    const name = emoji.getName(emojiData.emoji);
+    console.log("Selected emoji:", name);
+    setText((prev) => prev + " " + emojiData.emoji + " ");
+    inputRef.current?.focus();
   };
 
   return (
