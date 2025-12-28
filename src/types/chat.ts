@@ -7,14 +7,16 @@ export interface ChatHeaderProps {
 
 // Message
 export interface MessageBubbleProps {
-  text: string;
+  message: ChatMessage;
   mine?: boolean;
 }
 
 export interface ChatMessage {
   from: string;
   to: string;
-  content: string;
+  type: "text" | "image" | "text_image";
+  text?: string;
+  image?: string;
   time?: string;
 }
 

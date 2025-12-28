@@ -1,7 +1,57 @@
 import { EmojiUtils } from "../utils/EmojiUtils";
-import { useEffect, useState, useRef  } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "../services/WebSocketContext";
 import type { SidebarItemProps, ChatMessage } from "../types/chat";
+
+function parseContent(raw: string) {
+  if (!raw) {
+    return { type: "text" as const, text: "" };
+  }
+
+  // ⚠️ REMOVE QUOTES + TRIM
+  const normalized = raw.trim().replace(/^"(.*)"$/, "$1");
+
+  if (normalized.startsWith("TEXT_IMAGE::")) {
+    const payload = normalized.slice("TEXT_IMAGE::".length);
+
+    const splitIndex = payload.indexOf("|");
+    if (splitIndex === -1) {
+      return {
+        type: "text" as const,
+        text: EmojiUtils.decode(payload),
+      };
+    }
+
+    const text = payload.slice(0, splitIndex);
+    const image = payload.slice(splitIndex + 1);
+
+    return {
+      type: "text_image" as const,
+      text: EmojiUtils.decode(text),
+      image,
+    };
+  }
+
+  if (normalized.startsWith("IMAGE::")) {
+    return {
+      type: "image" as const,
+      image: normalized.slice("IMAGE::".length),
+    };
+  }
+
+  if (normalized.startsWith("TEXT::")) {
+    return {
+      type: "text" as const,
+      text: EmojiUtils.decode(normalized.slice("TEXT::".length)),
+    };
+  }
+
+  return {
+    type: "text" as const,
+    text: EmojiUtils.decode(normalized),
+  };
+}
+
 
 function normalizePeopleMessages(raw: any): ChatMessage[] {
   const list = Array.isArray(raw)
@@ -20,12 +70,20 @@ function normalizePeopleMessages(raw: any): ChatMessage[] {
     ? raw.data.messages
     : [];
 
-  return list.map((m: any) => ({
-    from: m.name ?? m.from ?? m.user ?? m.sender ?? "",
-    to: m.to ?? m.receiver ?? "",
-    content: EmojiUtils.decode(m.mes ?? m.content ?? m.message ?? ""),
-    time: m.createAt ?? m.time ?? m.createdAt ?? m.created_at ?? m.date ?? "",
-  }));
+  return list.map((m: any) => {
+    const rawContent = m.mes ?? m.content ?? m.message ?? "";
+
+    const parsed = parseContent(rawContent);
+
+    return {
+      from: m.name ?? m.from ?? m.user ?? m.sender ?? "",
+      to: m.to ?? m.receiver ?? "",
+      type: parsed.type,
+      text: parsed.text,
+      image: parsed.image,
+      time: m.createAt ?? m.time ?? m.createdAt ?? m.created_at ?? m.date ?? "",
+    };
+  });
 }
 
 export function useChat() {
