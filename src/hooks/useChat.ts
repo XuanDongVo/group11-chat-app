@@ -168,11 +168,7 @@ export function useChat() {
     });
   };
 
-  // (tuỳ bạn dùng sau) gửi tin nhắn người-người theo sheet
-  const sendToUser = (to: string, mes: string, isAudio?: boolean) => {
-    // Nếu là audio, thêm prefix để dễ nhận biết khi nhận về
-    const content = isAudio ? `[AUDIO]${mes}` : mes;
-    
+  const sendToUser = (to: string, mes: string) => {
     send({
       action: "onchat",
       data: {
@@ -180,7 +176,7 @@ export function useChat() {
         data: {
           type: "people",
           to,
-          mes: content,
+          mes: mes,
         },
       },
     });

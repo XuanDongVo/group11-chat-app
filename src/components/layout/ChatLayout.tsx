@@ -37,9 +37,9 @@ export default function ChatLayout({
             )}
 
             <ChatInput
-              onSend={(text, isAudio) => {
+              onSend={(text) => {
                 if (!currentUser) return;
-                sendToUser(currentUser, text, isAudio);
+                sendToUser(currentUser, text);
               }}
             />
           </>
