@@ -13,7 +13,13 @@ export default function ChatLayout({
   loadingMessages,
   selectUser,
   sendToUser,
-}: ChatLayoutProps) {
+  checkUserExist,
+  searchUsers,
+  searchLoading,
+}: ChatLayoutProps & {
+  searchUsers: { name: string; avatar?: string }[];
+  searchLoading: boolean;
+}) {
   return (
     <div className="chat-layout">
       {/* SIDEBAR */}
@@ -22,6 +28,9 @@ export default function ChatLayout({
         loading={loadingUsers}
         currentUser={currentUser}
         onSelectUser={selectUser}
+        checkUserExist={checkUserExist}
+        searchUsers={searchUsers}
+        searchLoading={searchLoading}
       />
 
       {/* MAIN CHAT */}

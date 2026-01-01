@@ -38,6 +38,9 @@ export interface SidebarProps {
   loading: boolean;
   currentUser: string | null;
   onSelectUser: (username: string) => void;
+  checkUserExist: (username: string) => void;
+  searchUsers: { name: string; avatar?: string }[];
+  searchLoading: boolean;
 }
 
 // ChatLayout Props
@@ -49,4 +52,7 @@ export interface ChatLayoutProps {
   loadingMessages: boolean;
   selectUser: (username: string) => void;
   sendToUser: (username: string, message: string, isAudio?: boolean) => void;
+  checkUserExist: (username: string) => void;
 }
+
+
