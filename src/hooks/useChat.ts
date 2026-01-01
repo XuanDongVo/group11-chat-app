@@ -100,6 +100,13 @@ export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
+  /* ===== Search ===== */
+  const [searchUsers, setSearchUsers] = useState<
+    { name: string; avatar?: string }[]
+  >([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchKeywordRef = useRef<string>("");
+
   useEffect(() => {
     const handleMessage = (message: { event: string; data?: any }) => {
       if (!message?.event) return;
@@ -155,6 +162,24 @@ export function useChat() {
           break;
         }
 
+        case "CHECK_USER_EXIST": {
+          const keyword = searchKeywordRef.current;
+
+          if (message.data?.status === true && keyword) {
+            setSearchUsers([
+              {
+                name: keyword,
+                avatar: "https://i.pravatar.cc/36",
+              },
+            ]);
+          } else {
+            setSearchUsers([]);
+          }
+
+          setSearchLoading(false);
+          break;
+        }
+
         default:
           break;
       }
@@ -169,6 +194,31 @@ export function useChat() {
       data: { event: "GET_USER_LIST" },
     });
   }, [send, onMessage]);
+
+  const joinRoom = (roomName: string) => {
+    send({
+      action: "onchat",
+      data: {
+        event: "JOIN_ROOM",
+        data: {
+          name: roomName,
+        },
+      },
+    });
+  };
+
+  const checkUserExist = (username: string) => {
+    searchKeywordRef.current = username;
+    setSearchLoading(true);
+
+    send({
+      action: "onchat",
+      data: {
+        event: "CHECK_USER_EXIST",
+        data: { user: username },
+      },
+    });
+  };
 
   const selectUser = (username: string) => {
     setCurrentUser(username);
@@ -188,13 +238,9 @@ export function useChat() {
     });
   };
   const loginUser = sessionStorage.getItem("username") || "";
-
-  // (tuỳ bạn dùng sau) gửi tin nhắn người-người theo sheet
-  const sendToUser = (to: string, mes: string, isAudio?: boolean) => {
-    // Nếu là audio, thêm prefix để dễ nhận biết khi nhận về
-    const content = isAudio ? `[AUDIO]${mes}` : mes;
-
-    const parsed = parseContent(content);
+  
+  const sendToUser = (to: string, mes: string) => {
+    const parsed = parseContent(mes);
     const optimistic: ChatMessage = {
       from: loginUser,
       to,
@@ -213,7 +259,7 @@ export function useChat() {
         data: {
           type: "people",
           to,
-          mes: content,
+          mes: mes,
         },
       },
     });
@@ -229,6 +275,10 @@ export function useChat() {
     messages,
     loadingMessages,
     selectUser,
+
+    checkUserExist,
+    searchUsers,
+    searchLoading,
 
     // optional
     sendToUser,
