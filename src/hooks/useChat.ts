@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "../services/WebSocketContext";
 import type { SidebarItemProps, ChatMessage } from "../types/chat";
 
-
 function parseContent(raw: string) {
   if (!raw) {
     return { type: "text" as const, text: "" };
@@ -55,7 +54,6 @@ function parseContent(raw: string) {
   };
 }
 
-
 function normalizePeopleMessages(raw: any): ChatMessage[] {
   const list = Array.isArray(raw)
     ? raw
@@ -102,6 +100,13 @@ export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
+  /* ===== Search ===== */
+  const [searchUsers, setSearchUsers] = useState<
+    { name: string; avatar?: string }[]
+  >([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchKeywordRef = useRef<string>("");
+
   useEffect(() => {
     const handleMessage = (message: { event: string; data?: any }) => {
       if (!message?.event) return;
@@ -135,6 +140,24 @@ export function useChat() {
           break;
         }
 
+        case "CHECK_USER_EXIST": {
+          const keyword = searchKeywordRef.current;
+
+          if (message.data?.status === true && keyword) {
+            setSearchUsers([
+              {
+                name: keyword,
+                avatar: "https://i.pravatar.cc/36",
+              },
+            ]);
+          } else {
+            setSearchUsers([]);
+          }
+
+          setSearchLoading(false);
+          break;
+        }
+
         default:
           break;
       }
@@ -149,6 +172,31 @@ export function useChat() {
       data: { event: "GET_USER_LIST" },
     });
   }, [send, onMessage]);
+
+  const joinRoom = (roomName: string) => {
+    send({
+      action: "onchat",
+      data: {
+        event: "JOIN_ROOM",
+        data: {
+          name: roomName,
+        },
+      },
+    });
+  };
+
+  const checkUserExist = (username: string) => {
+    searchKeywordRef.current = username;
+    setSearchLoading(true);
+
+    send({
+      action: "onchat",
+      data: {
+        event: "CHECK_USER_EXIST",
+        data: { user: username },
+      },
+    });
+  };
 
   const selectUser = (username: string) => {
     setCurrentUser(username);
@@ -192,6 +240,10 @@ export function useChat() {
     messages,
     loadingMessages,
     selectUser,
+    
+    checkUserExist,
+    searchUsers,
+    searchLoading,
 
     // optional
     sendToUser,
