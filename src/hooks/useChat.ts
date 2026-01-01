@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "../services/WebSocketContext";
 import type { SidebarItemProps, ChatMessage } from "../types/chat";
 
-
 function parseContent(raw: string) {
   if (!raw) {
     return { type: "text" as const, text: "" };
@@ -54,7 +53,6 @@ function parseContent(raw: string) {
     text: EmojiUtils.decode(normalized),
   };
 }
-
 
 function normalizePeopleMessages(raw: any): ChatMessage[] {
   const list = Array.isArray(raw)
@@ -114,24 +112,46 @@ export function useChat() {
         }
 
         case "GET_PEOPLE_CHAT_MES": {
-          const messages = normalizePeopleMessages(message.data);
-          setMessages([...messages].reverse());
+          const serverMessages = normalizePeopleMessages(
+            message.data
+          ).reverse();
+
+          setMessages((prev) => {
+            if (prev.length === 0) return serverMessages;
+
+            const lastPrevTime = prev[prev.length - 1]?.time;
+            const lastServerTime =
+              serverMessages[serverMessages.length - 1]?.time;
+
+            if (
+              lastPrevTime &&
+              lastServerTime &&
+              lastPrevTime > lastServerTime
+            ) {
+              return prev;
+            }
+
+            return serverMessages;
+          });
+
           setLoadingMessages(false);
           break;
         }
 
         case "SEND_CHAT": {
-          const currentUser = currentUserRef.current;
+          const partner = currentUserRef.current;
+          if (!partner) break;
 
-          if (currentUser) {
-            send({
-              action: "onchat",
+          send({
+            action: "onchat",
+            data: {
+              event: "GET_PEOPLE_CHAT_MES",
               data: {
-                event: "GET_PEOPLE_CHAT_MES",
-                data: { name: currentUser, page: 1 },
+                name: partner,
+                page: 1,
               },
-            });
-          }
+            },
+          });
           break;
         }
 
@@ -167,12 +187,25 @@ export function useChat() {
       },
     });
   };
+  const loginUser = sessionStorage.getItem("username") || "";
 
   // (tuỳ bạn dùng sau) gửi tin nhắn người-người theo sheet
   const sendToUser = (to: string, mes: string, isAudio?: boolean) => {
     // Nếu là audio, thêm prefix để dễ nhận biết khi nhận về
     const content = isAudio ? `[AUDIO]${mes}` : mes;
-    
+
+    const parsed = parseContent(content);
+    const optimistic: ChatMessage = {
+      from: loginUser,
+      to,
+      type: parsed.type,
+      text: parsed.text,
+      image: parsed.image,
+      audio: parsed.audio,
+      time: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimistic]);
+
     send({
       action: "onchat",
       data: {
