@@ -125,19 +125,6 @@ export function useChat() {
 
           setMessages((prev) => {
             if (prev.length === 0) return serverMessages;
-
-            const lastPrevTime = prev[prev.length - 1]?.time;
-            const lastServerTime =
-              serverMessages[serverMessages.length - 1]?.time;
-
-            if (
-              lastPrevTime &&
-              lastServerTime &&
-              lastPrevTime > lastServerTime
-            ) {
-              return prev;
-            }
-
             return serverMessages;
           });
 
