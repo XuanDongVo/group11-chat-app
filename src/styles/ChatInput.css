@@ -1,8 +1,8 @@
 .chat-input-container {
   display: flex;
   flex-direction: column;
-  background: white;
-  border-top: 1px solid #f0f0f0;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
   padding: 16px 20px;
 }
 
@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f5f5f5;
+  background: var(--input-bg);
   border-radius: 24px;
   padding: 8px 12px;
 }
@@ -22,11 +22,11 @@
   padding: 10px 12px;
   background: transparent;
   font-size: 14px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .chat-input-field::placeholder {
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .chat-input-actions {
@@ -43,12 +43,12 @@
   padding: 6px;
   border-radius: 50%;
   cursor: pointer;
-  color: #666;
+  color: var(--text-secondary);
   transition: background-color 0.2s;
 }
 
 .chat-input-icon-btn:hover {
-  background-color: #e5e5e5;
+  background-color: var(--bg-tertiary);
 }
 
 .chat-input-mic-btn {
@@ -59,12 +59,12 @@
   padding: 6px;
   border-radius: 50%;
   cursor: pointer;
-  color: #666;
+  color: var(--text-secondary);
   transition: all 0.2s;
 }
 
 .chat-input-mic-btn:hover {
-  background-color: #e5e5e5;
+  background-color: var(--bg-tertiary);
   transform: scale(1.05);
 }
 

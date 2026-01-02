@@ -1,7 +1,8 @@
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Moon, Sun } from "lucide-react";
 import type { HeaderProps } from "../../types/user";
 import EffectPicker from "../effects/EffectPicker";
 import { useState } from "react";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Header({
   username,
@@ -10,6 +11,7 @@ export default function Header({
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [currentEffect, setCurrentEffect] = useState<string | null>(null);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="app-header">
@@ -38,6 +40,14 @@ export default function Header({
             />
           )}
         </div>
+
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          title={theme === "light" ? "Chế độ tối" : "Chế độ sáng"}
+        >
+          {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
 
         <div className="app-user">
           <User size={18} />

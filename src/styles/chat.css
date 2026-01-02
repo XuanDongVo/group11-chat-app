@@ -1,4 +1,4 @@
-.message__text_image {
+  .message__text_image {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -38,7 +38,7 @@
   display: flex;
   height: calc(100vh - 56px);
   width: 100vw;
-  background: #ffffff;
+  background: var(--bg-primary);
   font-family: system-ui, -apple-system, sans-serif;
   overflow: hidden;
 }
@@ -48,7 +48,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--bg-primary);
   min-width: 0;
 }
 
@@ -56,8 +56,8 @@
 .chat-sidebar {
   width: 380px;
   min-width: 380px;
-  background: white;
-  border-right: 1px solid #f0f0f0;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -76,12 +76,12 @@
 }
 
 .chat-item:hover {
-  background-color: #f9f9f9;
+  background-color: var(--bg-hover);
 }
 
 .chat-item.active {
-  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+  background: var(--bg-active);
+  box-shadow: var(--shadow-md);
 }
 
 .chat-item__avatar-wrapper {
@@ -123,12 +123,12 @@
 .chat-item__top strong {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .chat-item__time {
   font-size: 12px;
-  color: #999;
+  color: var(--text-tertiary);
   white-space: nowrap;
 }
 
@@ -142,7 +142,7 @@
 .chat-item__bottom p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -165,8 +165,8 @@
 .chat-header {
   width: 100%;
   padding: 16px 20px;
-  background: white;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -199,7 +199,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .chat-header__status {
@@ -220,7 +220,7 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
-  color: #666;
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,7 +228,16 @@
 }
 
 .chat-header__action-btn:hover {
-  background-color: #f5f5f5;
+  background-color: var(--bg-hover);
+}
+
+/* Messages Container */
+.message-list-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--bg-secondary);
 }
 
 /* Messages */
@@ -240,7 +249,17 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #fafafa;
+  background: var(--bg-secondary);
+}
+
+.no-messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .message {
@@ -279,18 +298,18 @@
   display: inline-block;
   padding: 12px 16px;
   border-radius: 18px;
-  background: white;
+  background: var(--message-bg);
   font-size: 14px;
   line-height: 1.5;
   margin: 0;
-  color: #333;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .message.mine .message__description {
-  background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  background: var(--message-mine-bg);
   color: white;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+  box-shadow: var(--message-mine-shadow);
 }
 
 .message__meta {
@@ -298,7 +317,7 @@
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #999;
+  color: var(--text-tertiary);
   padding: 0 4px;
 }
 
@@ -308,12 +327,12 @@
 
 .message__time {
   font-size: 11px;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .message__status {
   font-size: 11px;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* Audio Message Styles */
@@ -328,17 +347,17 @@
   gap: 8px;
   padding: 8px 12px;
   border-radius: 18px;
-  background: white;
+  background: var(--message-bg);
   min-width: 200px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .message.mine .message__audio {
-  background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  background: var(--message-mine-bg);
 }
 
 .message__audio .audio-icon {
-  color: #666;
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 
@@ -371,10 +390,10 @@
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-  background: #ddd;
+  background: var(--border-color);
   border-radius: 3px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
-  background: #ccc;
+  background: var(--text-tertiary);
 }
