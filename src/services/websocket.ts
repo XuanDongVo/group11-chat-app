@@ -65,10 +65,10 @@ class WebSocketService {
                 && message.data?.RE_LOGIN_CODE) {
               this.reLoginCode = message.data.RE_LOGIN_CODE;
               if (this.reLoginCode) {
-                sessionStorage.setItem('RE_LOGIN_CODE', this.reLoginCode);
+                localStorage.setItem('RE_LOGIN_CODE', this.reLoginCode);
               }
               if (this.username) {
-                sessionStorage.setItem('username', this.username);
+                localStorage.setItem('username', this.username);
               }
             }
             
@@ -106,8 +106,8 @@ class WebSocketService {
         this.connect().then(() => {
           console.log('Kết nối lại thành công');
           // Tự động re-login nếu có code
-          const savedCode = sessionStorage.getItem('RE_LOGIN_CODE');
-          const savedUsername = sessionStorage.getItem('username');
+          const savedCode = localStorage.getItem('RE_LOGIN_CODE');
+          const savedUsername = localStorage.getItem('username');
           
           if (savedCode && savedUsername) {
             this.reLogin(savedUsername, savedCode);
@@ -120,8 +120,8 @@ class WebSocketService {
       console.warn('Đã đạt đến số lần kết nối lại tối đa');
       this.shouldReconnect = false;
       // Clear saved data
-      sessionStorage.removeItem('RE_LOGIN_CODE');
-      sessionStorage.removeItem('username');
+      localStorage.removeItem('RE_LOGIN_CODE');
+      localStorage.removeItem('username');
     }
   }
 
@@ -191,8 +191,8 @@ class WebSocketService {
     this.send(message);
     
     // Clear saved data
-    sessionStorage.removeItem('RE_LOGIN_CODE');
-    sessionStorage.removeItem('username');
+    localStorage.removeItem('RE_LOGIN_CODE');
+    localStorage.removeItem('username');
     
     // Disconnect WebSocket
     this.shouldReconnect = false;

@@ -6,7 +6,7 @@ export default function MessageList({
 }: {
   messages: ChatMessage[];
 }) {
-  const currentUser = sessionStorage.getItem("username");
+  const currentUser = localStorage.getItem("username");
   return (
     <div className="chat-messages">
       {messages.map((msg, idx) => (

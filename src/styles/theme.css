@@ -1,0 +1,84 @@
+:root {
+  /* Light Mode Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f0f0f0;
+  --bg-hover: #f9f9f9;
+  --bg-active: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  
+  --border-color: #e5e5e5;
+  --border-light: #f0f0f0;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  --message-bg: #ffffff;
+  --message-mine-bg: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  --message-mine-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+  
+  --input-bg: #f0f0f0;
+  --input-focus-bg: #ffffff;
+  --input-focus-border: #007bff;
+  
+  --accent-primary: #7c3aed;
+  --accent-secondary: #a855f7;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode Colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-tertiary: #2d2d2d;
+  --bg-hover: #2a2a2a;
+  --bg-active: linear-gradient(135deg, #3d2a5f 0%, #4a2d6d 100%);
+  
+  --text-primary: #e5e5e5;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  
+  --border-color: #3a3a3a;
+  --border-light: #2d2d2d;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.5);
+  
+  --message-bg: #2d2d2d;
+  --message-mine-bg: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  --message-mine-shadow: 0 2px 8px rgba(124, 58, 237, 0.5);
+  
+  --input-bg: #2d2d2d;
+  --input-focus-bg: #333333;
+  --input-focus-border: #5b8cff;
+  
+  --accent-primary: #9333ea;
+  --accent-secondary: #a855f7;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+}
+
+/* Smooth transition for theme changes */
+body,
+.chat-layout,
+.chat-main,
+.chat-sidebar,
+.chat-item,
+.chat-header,
+.message__description,
+.message__audio,
+.chat-input-container,
+.sidebar-header,
+.sidebar-tabs,
+.message-search {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}

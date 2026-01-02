@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Send, Smile, Image, Link, Mic, X } from "lucide-react";
+import { Send, Smile, Image, Mic, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { EmojiUtils } from "../../../utils/EmojiUtils";
 import AudioRecorder from "./AudioRecorder";
@@ -107,95 +107,93 @@ export default function ChatInput({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div className="chat-input-container">
       {showRecorder ? (
         <AudioRecorder
           onSendAudio={handleSendAudio}
           onCancel={() => setShowRecorder(false)}
         />
-      ) : (<>
-        {/* image preview */}
-        {imagePreview && (
-          <div className="chat-input-image-preview">
-            <img src={imagePreview} alt="preview" />
-            <button
-              type="button"
-              className="chat-input-remove-image"
-              onClick={removeImage}
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
-        <div className="chat-input">
-          {/* emoji */}
-          <button
-            type="button"
-            className="chat-input-emoji-btn"
-            onClick={() => setShowEmoji((v) => !v)}
-          >
-            <Smile size={20} />
-          </button>
-
-          {showEmoji && (
-            <div className="chat-input-emoji-picker">
-              <EmojiPicker onEmojiClick={handleEmojiClick} />
+      ) : (
+        <>
+          {/* image preview */}
+          {imagePreview && (
+            <div className="chat-input-image-preview">
+              <img src={imagePreview} alt="preview" />
+              <button
+                type="button"
+                className="chat-input-remove-image"
+                onClick={removeImage}
+              >
+                <X size={14} />
+              </button>
             </div>
           )}
-
-          {/* input */}
-          <div className="chat-input">
+          <div className="chat-input-wrapper">
             <input
               ref={inputRef}
               className="chat-input-field"
-              placeholder="Gửi tin nhắn..."
+              placeholder="Write something..."
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
+            <div className="chat-input-actions">
+              {/* emoji */}
+              <button
+                type="button"
+                className="chat-input-icon-btn"
+                onClick={() => setShowEmoji((v) => !v)}
+                title="Emoji"
+              >
+                <Smile size={20} />
+              </button>
+
+              {showEmoji && (
+                <div className="chat-input-emoji-picker">
+                  <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
+              )}
+
+              {/* attachment */}
+              <button
+                type="button"
+                className="chat-input-icon-btn"
+                onClick={handleImageClick}
+                title="Attach file"
+              >
+                <Image size={20} />
+              </button>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleImageSelect}
+              />
+
+              {/* voice recorder */}
+              <button
+                type="button"
+                className="chat-input-mic-btn"
+                onClick={() => setShowRecorder(true)}
+                title="Voice message"
+              >
+                <Mic size={20} />
+              </button>
+
+              {/* send */}
+              <button
+                type="button"
+                className="chat-input-send-btn"
+                onClick={handleSend}
+                title="Send"
+              >
+                <Send size={18} />
+              </button>
+            </div>
           </div>
-
-          {/* link (future) */}
-          <button type="button" className="chat-input-link-btn">
-            <Link size={20} />
-          </button>
-
-          {/* image */}
-          <button
-            type="button"
-            className="chat-input-link-btn"
-            onClick={handleImageClick}
-          >
-            <Image size={20} />
-          </button>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={handleImageSelect}
-          />
-
-          {/* mic button */}
-          <button
-            type="button"
-            className="chat-input-mic-btn"
-            onClick={() => setShowRecorder(true)}
-          >
-            <Mic size={20} />
-          </button>
-
-          {/* send */}
-          <button
-            type="button"
-            className="chat-input-send-btn"
-            onClick={handleSend}
-          >
-            <Send size={18} />
-          </button>
-        </div>
-      </>
+        </>
       )}
     </div>
   );

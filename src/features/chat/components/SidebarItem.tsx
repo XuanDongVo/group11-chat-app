@@ -10,7 +10,10 @@ export default function SidebarItem({
 }: SidebarItemProps) {
   return (
     <div className={`chat-item ${active ? "active" : ""}`}>
-      <img src={avatar} alt={name} />
+      <div className="chat-item__avatar-wrapper">
+        <img src={avatar} alt={name} />
+        <span className="chat-item__online-dot"></span>
+      </div>
 
       <div className="chat-item__body">
         <div className="chat-item__top">
