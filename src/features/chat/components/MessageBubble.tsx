@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Volume2 } from "lucide-react";
-import type { MessageBubbleProps } from "../../../types/chat";
+import type { MessageBubblePropsExtended } from "../../../types/chat";
 
 function formatTime(time?: string): string {
   if (!time) return "";
@@ -18,10 +18,16 @@ function getStatusText(mine: boolean): string {
   return mine ? "SENT" : "";
 }
 
-export default function MessageBubble({ message, mine }: MessageBubbleProps) {
+export default function MessageBubble({ message, mine = false, onImageClick }: MessageBubblePropsExtended) {
   const avatar = "https://i.pravatar.cc/100";
   const timeStr = formatTime(message.time);
   const statusText = getStatusText(mine);
+
+  const handleImageClick = (imageUrl?: string) => {
+    if (imageUrl && onImageClick) {
+      onImageClick(imageUrl);
+    }
+  };
 
   if (message.type === "audio" && message.audio) {
     return (
@@ -64,7 +70,8 @@ export default function MessageBubble({ message, mine }: MessageBubbleProps) {
             <img
               src={message.image}
               alt="chat-img"
-              className="message__image"
+              className="message__image message__image--clickable"
+              onClick={() => handleImageClick(message.image)}
             />
           </div>
         )}
@@ -76,7 +83,8 @@ export default function MessageBubble({ message, mine }: MessageBubbleProps) {
               <img
                 src={message.image}
                 alt="chat-img"
-                className="message__image message__image--mb"
+                className="message__image message__image--mb message__image--clickable"
+                onClick={() => handleImageClick(message.image)}
               />
             )}
 

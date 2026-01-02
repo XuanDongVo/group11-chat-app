@@ -12,6 +12,17 @@ export interface MessageBubbleProps {
   isAudio?: boolean;
 }
 
+export interface MessageBubblePropsExtended extends MessageBubbleProps {
+  onImageClick?: (imageUrl: string) => void;
+}
+
+// Image Lightbox
+export interface ImageLightboxProps {
+  images: string[];
+  initialIndex: number;
+  onClose: () => void;
+}
+
 export interface ChatMessage {
   from: string;
   to: string;
