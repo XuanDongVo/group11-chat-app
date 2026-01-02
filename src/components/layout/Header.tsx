@@ -14,7 +14,7 @@ export default function Header({
   return (
     <header className="app-header">
       <div className="app-header__left">
-        <h2>Chat App</h2>
+        <h2 className="app-title">Messages</h2>
       </div>
 
       <div className="app-header__right">

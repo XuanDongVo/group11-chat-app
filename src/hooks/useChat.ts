@@ -237,7 +237,7 @@ export function useChat() {
       },
     });
   };
-  const loginUser = sessionStorage.getItem("username") || "";
+  const loginUser = localStorage.getItem("username") || "";
   
   const sendToUser = (to: string, mes: string) => {
     const parsed = parseContent(mes);

@@ -36,6 +36,15 @@
   font-weight: 600;
 }
 
+.app-title {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  font-size: 32px;
+}
+
 .app-header__right {
   display: flex;
   align-items: center;
