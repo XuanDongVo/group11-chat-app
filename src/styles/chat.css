@@ -28,6 +28,17 @@
   display: block;
 }
 
+.message__image--clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.message__image--clickable:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 * {
   margin: 0;
   padding: 0;
