@@ -1,5 +1,5 @@
 import type { ChatMessage, ServerMessage, MessageHandler } from '../types';
-
+import { createUser } from './friendService';
 const WS_URL = 'wss://chat.longapp.site/chat/chat';
 
 class WebSocketService {
@@ -150,7 +150,7 @@ class WebSocketService {
     this.send(message);
   }
 
-  register(username: string, password: string) {
+  async register(username: string, password: string) {
     this.username = username;
     const message: ChatMessage = {
       action: 'onchat',
@@ -163,6 +163,9 @@ class WebSocketService {
       }
     };
     this.send(message);
+     try {
+      await createUser(username);
+    } catch (e) {}
   }
 
   reLogin(username: string, code: string) {

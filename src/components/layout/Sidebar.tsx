@@ -86,7 +86,7 @@ export default function Sidebar({
       <div className="sidebar-search">
         <Search size={16} />
         <input
-          placeholder="Tìm kiếm cuộc trò chuyện..."
+          placeholder={`Tìm kiếm ${activeTab === "groups" ? "nhóm" : "bạn bè"}...`}
           value={keyword}
           onChange={(e) => handleSearchChange(e.target.value)}
         />
