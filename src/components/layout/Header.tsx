@@ -1,11 +1,12 @@
 import { LogOut, User, Moon, Sun, UserPlus } from "lucide-react";
 import Offcanvas from "../ui/Offcanvas";
-import FriendInvitesTab  from "./FriendInvitesTab";
+import FriendInvitesTab from "./FriendInvitesTab";
 import type { FriendInvite } from "../../types/FriendInvites";
 import type { HeaderProps } from "../../types/user";
 import EffectPicker from "../effects/EffectPicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
+import { getFriendRequests, cancelFriendRequest, acceptFriendRequest } from "../../services/friendService";
 
 export default function Header({
   username,
@@ -18,26 +19,39 @@ export default function Header({
 
   // Offcanvas for friend invites
   const [showInvites, setShowInvites] = useState(false);
-  // Dummy data, replace with real data from props/context
-  const [friendInvites, setFriendInvites] = useState<FriendInvite[]>([
-    {
-      id: "1",
-      name: "Nguyễn Văn A",
-      avatar: "https://i.pravatar.cc/40?img=1",
-    },
-    {
-      id: "2",
-      name: "Trần Thị B",
-      avatar: "https://i.pravatar.cc/40?img=2",
-    },
-  ]);
-  const handleAcceptInvite = (id: string) => {
-    setFriendInvites((prev) => prev.filter((invite) => invite.id !== id));
-    // TODO: Gọi API accept ở đây
+  const [friendInvites, setFriendInvites] = useState<FriendInvite[]>([]);
+
+  const fetchFriendInvites = async () => {
+    const invitesRaw = await getFriendRequests(username);
+    console.log("Fetched invites:", invitesRaw);
+    const invites: (FriendInvite & { _docId: string })[] = invitesRaw.map((invite: any) => ({
+      _docId: invite.id || invite._docId || invite.docId || '',
+      name: invite.from || invite.name || "Unknown",
+      avatar: invite.avatar || "https://i.pravatar.cc/40",
+    }));
+    setFriendInvites(invites);
   };
-  const handleRejectInvite = (id: string) => {
-    setFriendInvites((prev) => prev.filter((invite) => invite.id !== id));
-    // TODO: Gọi API reject ở đây
+
+  useEffect(() => {
+    fetchFriendInvites();
+  }, [showInvites]);
+
+  // Accept request add friend
+  const handleAcceptInvite = (inviteDocId: string) => {
+    const invite = friendInvites.find(i => i._docId === inviteDocId);
+    if (!invite) return;
+    acceptFriendRequest(inviteDocId, invite.name, username).then(() => {
+      fetchFriendInvites();
+    });
+  };
+
+  // Reject request add friend
+  const handleRejectInvite = (inviteDocId: string) => {
+    const invite = friendInvites.find(i => i._docId === inviteDocId);
+    if (!invite) return;
+    cancelFriendRequest(inviteDocId).then(() => {
+      fetchFriendInvites();
+    });
   };
 
   return (
@@ -98,7 +112,7 @@ export default function Header({
                   position: "absolute",
                   top: -4,
                   right: -8,
-                  background:  "var(--bg-active)",
+                  background: "var(--bg-active)",
                   color: "var(--accent-primary)",
                   borderRadius: "50%",
                   fontSize: 12,
@@ -122,18 +136,18 @@ export default function Header({
           <User size={18} />
           <span>{username}</span>
         </div>
-      {/* Offcanvas lời mời kết bạn */}
-      <Offcanvas 
-        open={showInvites}
-        onClose={() => setShowInvites(false)}
-        title="Lời mời kết bạn"
-      >
-        <FriendInvitesTab
-          invites={friendInvites}
-          onAccept={handleAcceptInvite}
-          onReject={handleRejectInvite}
-        />
-      </Offcanvas>
+        {/* Offcanvas lời mời kết bạn */}
+        <Offcanvas
+          open={showInvites}
+          onClose={() => setShowInvites(false)}
+          title="Lời mời kết bạn"
+        >
+          <FriendInvitesTab
+            invites={friendInvites}
+            onAccept={handleAcceptInvite}
+            onReject={handleRejectInvite}
+          />
+        </Offcanvas>
 
         <button className="app-logout" onClick={onLogout}>
           <LogOut size={18} />

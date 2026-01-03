@@ -5,7 +5,7 @@ export interface OffcanvasProps {
   title?: string;
 }
 export interface FriendInvite {
-    id: string;
+    _docId?: string;
     name: string;
     avatar: string;
 }
