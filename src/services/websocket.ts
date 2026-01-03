@@ -150,7 +150,7 @@ class WebSocketService {
     this.send(message);
   }
 
-  register(username: string, password: string) {
+  async register(username: string, password: string) {
     this.username = username;
     const message: ChatMessage = {
       action: 'onchat',
