@@ -18,6 +18,7 @@
     "emoji-dictionary": "^1.0.12",
     "emoji-picker-react": "^4.16.1",
     "emoji-regex": "^10.6.0",
+    "firebase": "^12.7.0",
     "lucide-react": "^0.561.0",
     "react": "^19.2.0",
     "react-confetti": "^6.4.0",
