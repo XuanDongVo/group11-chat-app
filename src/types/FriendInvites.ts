@@ -15,3 +15,11 @@ export interface FriendInvitesTabProps {
     onAccept: (id: string) => void;
     onReject: (id: string) => void;
 }
+
+export interface InviteFriendsProps {
+  open: boolean;
+  onClose: () => void;
+  onInvite: (usernames: string[]) => void;
+  currentMembers: string[];
+  currentUser: string;
+}

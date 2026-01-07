@@ -1,11 +1,22 @@
-import { Phone, Video, Info } from "lucide-react";
+import { Phone, Video, Info, UserPlus } from "lucide-react";
 import type { ChatHeaderProps } from "../../../types/chat";
+import { useState } from "react";
+import InviteFriendsOffcanvas from "../../../components/ui/InviteFriendsOffcanvas";
 
 export default function ChatHeader({
   avatar,
   name,
   status,
-}: ChatHeaderProps) {
+  currentUser = "",
+  currentMembers = [],
+  onInviteFriends,
+}: ChatHeaderProps & {
+  currentUser?: string;
+  currentMembers?: string[];
+  onInviteFriends?: (usernames: string[]) => void;
+}) {
+  const [showInvite, setShowInvite] = useState(false);
+
   return (
     <header className="chat-header">
       <div className="chat-header__left">
@@ -19,6 +30,9 @@ export default function ChatHeader({
       </div>
 
       <div className="chat-header__actions">
+        <button className="chat-header__action-btn" title="Mời bạn vào nhóm" onClick={() => setShowInvite(true)}>
+          <UserPlus size={18} />
+        </button>
         <button className="chat-header__action-btn" title="Call">
           <Phone size={18} />
         </button>
@@ -29,6 +43,17 @@ export default function ChatHeader({
           <Info size={18} />
         </button>
       </div>
+
+      <InviteFriendsOffcanvas
+        open={showInvite}
+        onClose={() => setShowInvite(false)}
+        onInvite={(usernames) => {
+          setShowInvite(false);
+          onInviteFriends && onInviteFriends(usernames);
+        }}
+        currentMembers={currentMembers}
+        currentUser={currentUser}
+      />
     </header>
   );
 }

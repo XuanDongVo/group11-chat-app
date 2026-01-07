@@ -1,0 +1,52 @@
+.invite-friends-list {
+  max-height: 350px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+.invite-friend-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+}
+.invite-friend-item:last-child {
+  border-bottom: none;
+}
+.invite-friend-item:hover {
+  background: #f8f9fa;
+}
+.invite-friend-checkbox {
+  margin-right: 12px;
+  accent-color: var(--accent-primary, #007bff);
+}
+.invite-friend-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+  border: 2px solid #e0e0e0;
+}
+.invite-friend-name {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #222;
+}
+.invite-friends-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px 0;
+  background: var(--accent-primary, #007bff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.invite-friends-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
