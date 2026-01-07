@@ -13,6 +13,7 @@ export interface MessageBubbleProps {
 }
 
 export interface MessageBubblePropsExtended extends MessageBubbleProps {
+  avatar?: string;
   onImageClick?: (imageUrl: string) => void;
 }
 

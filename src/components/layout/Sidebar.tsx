@@ -15,14 +15,17 @@ export default function Sidebar({
   checkUserExist,
   searchUsers,
   searchLoading,
+  activeTab,
+  onTabChange,
 }: SidebarProps & {
   checkUserExist: (username: string) => void;
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
+  activeTab: "friends" | "groups";
+  onTabChange: (tab: "friends" | "groups") => void;
 }) {
   const [keyword, setKeyword] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
-  const [activeTab, setActiveTab] = useState<"friends" | "groups">("friends");
   const [friends, setFriends] = useState<{ name: string; avatar?: string; lastMessage?: string; time?: string; unread?: number }[]>([]);
   const currentUserName = localStorage.getItem("username") || "";
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -76,14 +79,14 @@ export default function Sidebar({
       <div className="sidebar-tabs">
         <button
           className={`sidebar-tab ${activeTab === "friends" ? "active" : ""}`}
-          onClick={() => setActiveTab("friends")}
+          onClick={() => onTabChange("friends")}
         >
           <User size={16} />
           <span>BẠN BÈ</span>
         </button>
         <button
           className={`sidebar-tab ${activeTab === "groups" ? "active" : ""}`}
-          onClick={() => setActiveTab("groups")}
+          onClick={() => onTabChange("groups")}
         >
           <Users size={16} />
           <span>NHÓM</span>

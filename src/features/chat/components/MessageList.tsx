@@ -99,14 +99,19 @@ return (
   <>
     <div className="message-list-container" style={{ position: "relative" }}>
       <div className="chat-messages" ref={listRef} onScroll={handleScroll}>
-        {messages.map((msg, idx) => (
-          <MessageBubble
-            key={idx}
-            message={msg}
-            mine={msg.from === currentUser}
-            onImageClick={handleImageClick}
-          />
-        ))}
+        {messages.map((msg, idx) => {
+          const sender = msg.from;
+          const avatar = `https://i.pravatar.cc/100?u=${sender}`;
+          return (
+            <MessageBubble
+              key={idx}
+              message={msg}
+              mine={sender === currentUser}
+              onImageClick={handleImageClick}
+              avatar={avatar}
+            />
+          );
+        })}
         <div ref={bottomRef} />
       </div>
 

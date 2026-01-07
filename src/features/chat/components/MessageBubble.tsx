@@ -18,8 +18,7 @@ function getStatusText(mine: boolean): string {
   return mine ? "SENT" : "";
 }
 
-export default function MessageBubble({ message, mine = false, onImageClick }: MessageBubblePropsExtended) {
-  const avatar = "https://i.pravatar.cc/100";
+export default function MessageBubble({ message, mine = false, onImageClick, avatar }: MessageBubblePropsExtended) {
   const timeStr = formatTime(message.time);
   const statusText = getStatusText(mine);
 

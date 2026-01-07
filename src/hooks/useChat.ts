@@ -57,6 +57,10 @@ function parseContent(raw: string) {
 function normalizePeopleMessages(raw: any): ChatMessage[] {
   const list = Array.isArray(raw)
     ? raw
+    : Array.isArray(raw?.chatData)
+    ? raw.chatData
+    : Array.isArray(raw?.data?.chatData)
+    ? raw.data.chatData
     : Array.isArray(raw?.data)
     ? raw.data
     : Array.isArray(raw?.list)
@@ -132,6 +136,20 @@ export function useChat() {
           break;
         }
 
+        case "GET_ROOM_CHAT_MES": {
+          const serverMessages = normalizePeopleMessages(
+            message.data
+          ).reverse();
+
+          setMessages((prev) => {
+            if (prev.length === 0) return serverMessages;
+            return serverMessages;
+          });
+
+          setLoadingMessages(false);
+          break;
+        }
+
         case "SEND_CHAT": {
           const partner = currentUserRef.current;
           if (!partner) break;
@@ -194,6 +212,50 @@ export function useChat() {
     });
   };
 
+  const getRoomChatMessages = (roomName: string) => {
+    setCurrentUser(roomName);
+    currentUserRef.current = roomName;
+    setLoadingMessages(true);
+    setMessages([]);
+
+    send({
+      action: "onchat",
+      data: {
+        event: "GET_ROOM_CHAT_MES",
+        data: {
+          name: roomName,
+          page: 1,
+        },
+      },
+    });
+  };
+
+  const sendChatRoom = (roomName: string, mes: string) => {
+    const parsed = parseContent(mes);
+    const optimistic: ChatMessage = {
+      from: loginUser,
+      to: roomName,
+      type: parsed.type,
+      text: parsed.text,
+      image: parsed.image,
+      audio: parsed.audio,
+      time: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, optimistic]);
+    send({
+      action: "onchat",
+      data: {
+        event: "SEND_CHAT",
+        data: {
+          type: "room",
+          to: roomName,
+          mes: mes,
+        },
+      },
+    });
+  };
+
   const checkUserExist = (username: string) => {
     searchKeywordRef.current = username;
     setSearchLoading(true);
@@ -225,7 +287,7 @@ export function useChat() {
     });
   };
   const loginUser = localStorage.getItem("username") || "";
-  
+
   const sendToUser = (to: string, mes: string) => {
     const parsed = parseContent(mes);
     const optimistic: ChatMessage = {
@@ -269,5 +331,7 @@ export function useChat() {
 
     // optional
     sendToUser,
+    getRoomChatMessages,
+    sendChatRoom,
   };
 }
