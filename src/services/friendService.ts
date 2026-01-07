@@ -10,6 +10,7 @@ import {
   query,
   where,
   addDoc,
+   arrayUnion
 } from "firebase/firestore";
 import app from "./firebase";
 
@@ -43,7 +44,6 @@ export async function cancelFriendRequest(requestId: string): Promise<void> {
 }
 
 // Chấp nhận yêu cầu kết bạn: thêm bạn bè 2 chiều, xóa request
-import { arrayUnion } from "firebase/firestore";
 export async function acceptFriendRequest(
   requestId: string,
   fromUserName: string,
@@ -51,8 +51,8 @@ export async function acceptFriendRequest(
 ) {
   const userRef1 = doc(db, "users", fromUserName);
   const userRef2 = doc(db, "users", toUserName);
-  await updateDoc(userRef1, { friends: arrayUnion(toUserName) });
-  await updateDoc(userRef2, { friends: arrayUnion(fromUserName) });
+  await updateDoc(userRef1, { friends: arrayUnion({ name: toUserName }) });
+  await updateDoc(userRef2, { friends: arrayUnion({ name: fromUserName }) });
   await deleteDoc(doc(db, "friend_requests", requestId));
 }
 
@@ -61,7 +61,10 @@ export async function getFriends(UserName: string) {
   const userRef = doc(db, "users", UserName);
   const snapshot = await getDoc(userRef);
   const data = snapshot.data();
-  return data && data.friends ? data.friends : [];
+  if (data && Array.isArray(data.friends)) {
+    return data.friends;
+  }
+  return [];
 }
 
 // Tạo user mới
