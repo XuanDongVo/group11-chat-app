@@ -42,7 +42,7 @@ export default function ChatLayout({
             {loadingMessages ? (
               <div style={{ padding: 16 }}>Đang tải tin nhắn...</div>
             ) : (
-              <MessageList messages={messages} />
+              <MessageList key={currentUser ?? "no-chat"} messages={messages} activeChatId={currentUser} />
             )}
 
             <ChatInput
