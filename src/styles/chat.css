@@ -249,6 +249,7 @@
   flex-direction: column;
   min-height: 0;
   background: var(--bg-secondary);
+  /* position: relative; */
 }
 
 /* Messages */
@@ -407,4 +408,46 @@
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
+}
+
+/* Nút cuộn xuống đáy */
+.scroll-to-bottom-btn {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  line-height: 1;
+  z-index: 50;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.scroll-to-bottom-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+}
+
+.scroll-to-bottom-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #7c3aed;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
 }
