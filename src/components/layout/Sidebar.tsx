@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageSquare, Search, User, Users } from "lucide-react";
 import CreateRoomModal from "../room/CreateRoomModal";
 import SidebarItem from "../../features/chat/components/SidebarItem";
 import UserList from "../../features/chat/components/UserList";
 import type { SidebarProps } from "../../types/chat";
 import "../../styles/Sidebar.css";
+import { getFriends } from "../../services/friendService";
 
 export default function Sidebar({
   userList,
@@ -14,15 +15,19 @@ export default function Sidebar({
   checkUserExist,
   searchUsers,
   searchLoading,
+  activeTab,
+  onTabChange,
 }: SidebarProps & {
   checkUserExist: (username: string) => void;
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
+  activeTab: "friends" | "groups";
+  onTabChange: (tab: "friends" | "groups") => void;
 }) {
   const [keyword, setKeyword] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
-  const [activeTab, setActiveTab] = useState<"friends" | "groups">("friends");
-
+  const [friends, setFriends] = useState<{ name: string; avatar?: string; lastMessage?: string; time?: string; unread?: number }[]>([]);
+  const currentUserName = localStorage.getItem("username") || "";
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSearchChange = (value: string) => {
@@ -40,11 +45,25 @@ export default function Sidebar({
     }, 500);
   };
 
+  useEffect(() => {
+    const fetchFriends = async () => {
+      const data = await getFriends(currentUserName);
+      setFriends(data);
+    };
+
+    fetchFriends();
+  }, [currentUser]);
+
   const isSearching = keyword.trim().length > 0;
 
-  // Phân chia friends và groups 
-  const friends = userList.slice(0, Math.ceil(userList.length / 2));
-  const groups = userList.slice(Math.ceil(userList.length / 2));
+  // Danh sách group
+  const friendNames = friends.map(f => f.name);
+  const groups = userList.filter(
+    user =>
+      user.name !== currentUserName &&
+      !friendNames.includes(user.name)
+  );
+
 
   // Chọn danh sách hiển thị dựa trên tab đang active
   const displayList = activeTab === "friends" ? friends : groups;
@@ -60,14 +79,14 @@ export default function Sidebar({
       <div className="sidebar-tabs">
         <button
           className={`sidebar-tab ${activeTab === "friends" ? "active" : ""}`}
-          onClick={() => setActiveTab("friends")}
+          onClick={() => onTabChange("friends")}
         >
           <User size={16} />
           <span>BẠN BÈ</span>
         </button>
         <button
           className={`sidebar-tab ${activeTab === "groups" ? "active" : ""}`}
-          onClick={() => setActiveTab("groups")}
+          onClick={() => onTabChange("groups")}
         >
           <Users size={16} />
           <span>NHÓM</span>
@@ -122,7 +141,7 @@ export default function Sidebar({
                 <SidebarItem
                   avatar={user.avatar || "https://i.pravatar.cc/40"}
                   name={user.name}
-                  lastMessage={user.lastMessage}
+                  lastMessage={user.lastMessage || ""}
                   time={user.time}
                   unread={user.unread}
                   active={currentUser === user.name}
