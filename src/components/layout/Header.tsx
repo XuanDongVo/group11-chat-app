@@ -62,17 +62,36 @@ export default function Header({
   return (
     <header className="app-header">
       <div className="app-header__left">
-        <h2 className="app-title">Messages</h2>
+        <div className="header-logo">
+          <div className="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <h2 className="app-title">Chat App</h2>
+        </div>
+        <div className="header-user-info">
+          <div className="user-avatar-wrapper">
+            <div className="user-avatar">
+              <User size={16} />
+            </div>
+            <span className="online-indicator"></span>
+          </div>
+          <span className="username-text">{username}</span>
+        </div>
       </div>
 
       <div className="app-header__right">
         <div className="effect-wrapper">
           <button
-            className="effect-trigger"
+            className="header-icon-btn effect-trigger"
             onClick={() => setOpen(v => !v)}
             title="Hiệu ứng nền"
           >
-            Hiệu ứng nền
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24" strokeLinecap="round"/>
+            </svg>
           </button>
 
           {open && (
@@ -88,59 +107,29 @@ export default function Header({
         </div>
 
         <button
-          className="theme-toggle"
+          className="header-icon-btn theme-toggle"
           onClick={toggleTheme}
           title={theme === "light" ? "Chế độ tối" : "Chế độ sáng"}
         >
-          {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+          {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
         </button>
 
-
         {/* Badge lời mời kết bạn */}
-        <div style={{ position: "relative", marginRight: 16 }}>
+        <div className="invite-badge-wrapper">
           <button
-            className="invite-badge-btn"
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              position: "relative",
-              padding: 0,
-            }}
+            className="header-icon-btn invite-badge-btn"
             onClick={() => setShowInvites(true)}
             title="Lời mời kết bạn"
           >
-            <UserPlus size={22} />
+            <UserPlus size={20} />
             {friendInvites.length > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -4,
-                  right: -8,
-                  background: "var(--bg-active)",
-                  color: "var(--accent-primary)",
-                  borderRadius: "50%",
-                  fontSize: 12,
-                  minWidth: 18,
-                  height: 18,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0 5px",
-                  fontWeight: 600,
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-                }}
-              >
+              <span className="notification-badge">
                 {friendInvites.length}
               </span>
             )}
           </button>
         </div>
 
-        <div className="app-user">
-          <User size={18} />
-          <span>{username}</span>
-        </div>
         {/* Offcanvas lời mời kết bạn */}
         <Offcanvas
           open={showInvites}
@@ -156,7 +145,7 @@ export default function Header({
 
         <button className="app-logout" onClick={onLogout}>
           <LogOut size={18} />
-          Đăng xuất
+          <span>Đăng xuất</span>
         </button>
       </div>
     </header>

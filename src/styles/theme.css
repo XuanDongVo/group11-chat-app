@@ -81,4 +81,30 @@ body,
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ========== HIDE SCROLLBAR ========== */
+
+/* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Ensure scrolling still works */
+html {
+  overflow: auto;
+}
+
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
