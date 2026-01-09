@@ -31,7 +31,7 @@ export default function InviteFriendsOffcanvas({
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
     );
   };
-
+  
   return (
     <Offcanvas open={open} onClose={onClose} title="Mời bạn vào nhóm">
       <div className="invite-friends-list">

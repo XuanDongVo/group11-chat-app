@@ -20,11 +20,13 @@ export default function ChatLayout({
   searchLoading,
   getRoomChatMessages,
   sendChatRoom,
+  friendsRefreshTrigger,
 }: ChatLayoutProps & {
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
   getRoomChatMessages: (roomName: string) => void;
   sendChatRoom: (roomName: string, message: string) => void;
+  friendsRefreshTrigger?: number;
 }) {
   const [activeTab, setActiveTab] = useState<"friends" | "groups">("friends");
   const handleTabChange = (tab: "friends" | "groups") => setActiveTab(tab);
@@ -61,6 +63,7 @@ export default function ChatLayout({
         searchLoading={searchLoading}
         activeTab={activeTab}
         onTabChange={handleTabChange}
+        refreshTrigger={friendsRefreshTrigger}
       />
 
       {/* MAIN CHAT */}

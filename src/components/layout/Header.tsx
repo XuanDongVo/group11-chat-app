@@ -12,7 +12,8 @@ export default function Header({
   username,
   onLogout,
   onChangeEffect,
-}: HeaderProps) {
+  onFriendsUpdate,
+}: HeaderProps & { onFriendsUpdate?: () => void }) {
   const [open, setOpen] = useState(false);
   const [currentEffect, setCurrentEffect] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
@@ -42,6 +43,10 @@ export default function Header({
     if (!invite) return;
     acceptFriendRequest(inviteDocId, invite.name, username).then(() => {
       fetchFriendInvites();
+      // Trigger refresh danh sách bạn bè trong Sidebar
+      if (onFriendsUpdate) {
+        onFriendsUpdate();
+      }
     });
   };
 

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageSquare, Search, User, Users } from "lucide-react";
+import { MessageSquare, Search, User, Users, UserPlus } from "lucide-react";
 import CreateRoomModal from "../room/CreateRoomModal";
 import SidebarItem from "../../features/chat/components/SidebarItem";
 import UserList from "../../features/chat/components/UserList";
+import AddFriendModal from "../user/AddFriendModal";
 import type { SidebarProps } from "../../types/chat";
 import "../../styles/Sidebar.css";
 import { getFriends } from "../../services/friendService";
@@ -17,15 +18,18 @@ export default function Sidebar({
   searchLoading,
   activeTab,
   onTabChange,
+  refreshTrigger,
 }: SidebarProps & {
   checkUserExist: (username: string) => void;
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
   activeTab: "friends" | "groups";
   onTabChange: (tab: "friends" | "groups") => void;
+  refreshTrigger?: number;
 }) {
   const [keyword, setKeyword] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
+  const [openAddFriend, setOpenAddFriend] = useState(false);
   const [friends, setFriends] = useState<{ name: string; avatar?: string; lastMessage?: string; time?: string; unread?: number }[]>([]);
   const currentUserName = localStorage.getItem("username") || "";
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -52,7 +56,16 @@ export default function Sidebar({
     };
 
     fetchFriends();
-  }, [currentUser]);
+
+    // Polling để tự động refresh danh sách bạn bè mỗi 3 giây
+    const intervalId = setInterval(() => {
+      if (activeTab === "friends") {
+        fetchFriends();
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [currentUser, refreshTrigger, activeTab]);
 
   const isSearching = keyword.trim().length > 0;
 
@@ -73,6 +86,11 @@ export default function Sidebar({
       <CreateRoomModal
         open={openCreate}
         onClose={() => setOpenCreate(false)}
+      />
+      <AddFriendModal
+        open={openAddFriend}
+        onClose={() => setOpenAddFriend(false)}
+        currentUser={currentUserName}
       />
 
       {/* ===== TABS ===== */}
@@ -98,6 +116,14 @@ export default function Sidebar({
         >
           <MessageSquare size={16} />
           <span>TẠO NHÓM</span>
+        </button>
+        <button
+          className="sidebar-tab sidebar-tab-add-friend"
+          onClick={() => setOpenAddFriend(true)}
+          title="Thêm bạn mới"
+        >
+          <UserPlus size={16} />
+          <span>THÊM BẠN</span>
         </button>
       </div>
 

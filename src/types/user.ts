@@ -16,3 +16,9 @@ export type UserListProps = {
   activeUser: string;
   onSelectUser: (name: string) => void;
 };
+
+export interface AddFriendModalProps {
+  open: boolean;
+  onClose: () => void;
+  currentUser: string;
+}
