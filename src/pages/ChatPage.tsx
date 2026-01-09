@@ -17,6 +17,7 @@ interface ChatPageProps {
 
 function ChatPage({ onLogout }: ChatPageProps) {
   const [effect, setEffect] = useState<EffectType>("snow");
+  const [friendsRefreshTrigger, setFriendsRefreshTrigger] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const chat = useChat();
@@ -64,17 +65,22 @@ function ChatPage({ onLogout }: ChatPageProps) {
     navigate("/login");
   };
 
+  const handleFriendsUpdate = () => {
+    setFriendsRefreshTrigger(prev => prev + 1);
+  };
+
   return (
     <>
       <Header
         username={username || "User"}
         onLogout={handleLogout}
         onChangeEffect={setEffect}
+        onFriendsUpdate={handleFriendsUpdate}
       />
 
       <EffectsLayer effect={effect} />
 
-      <ChatLayout {...chat} />
+      <ChatLayout {...chat} friendsRefreshTrigger={friendsRefreshTrigger} />
     </>
   );
 }
