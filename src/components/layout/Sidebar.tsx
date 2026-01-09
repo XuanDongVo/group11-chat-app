@@ -3,10 +3,9 @@ import { MessageSquare, Search, User, Users, UserPlus } from "lucide-react";
 import CreateRoomModal from "../room/CreateRoomModal";
 import SidebarItem from "../../features/chat/components/SidebarItem";
 import UserList from "../../features/chat/components/UserList";
-import AddFriendModal from "../user/AddFriendModal";
 import type { SidebarProps } from "../../types/chat";
 import "../../styles/Sidebar.css";
-import { getFriends } from "../../services/friendService";
+import { getFriends, sendFriendRequest } from "../../services/friendService";
 
 export default function Sidebar({
   userList,
@@ -29,8 +28,8 @@ export default function Sidebar({
 }) {
   const [keyword, setKeyword] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
-  const [openAddFriend, setOpenAddFriend] = useState(false);
   const [friends, setFriends] = useState<{ name: string; avatar?: string; lastMessage?: string; time?: string; unread?: number }[]>([]);
+  const [sendingRequest, setSendingRequest] = useState<string | null>(null);
   const currentUserName = localStorage.getItem("username") || "";
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -81,16 +80,30 @@ export default function Sidebar({
   // Chọn danh sách hiển thị dựa trên tab đang active
   const displayList = activeTab === "friends" ? friends : groups;
 
+  const handleAddFriend = async (username: string) => {
+    if (username === currentUserName) {
+      alert("Bạn không thể kết bạn với chính mình");
+      return;
+    }
+
+    setSendingRequest(username);
+    try {
+      await sendFriendRequest(currentUserName, username);
+      alert("Đã gửi lời mời kết bạn thành công!");
+      setKeyword(""); // Clear search after sending request
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+      alert("Có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setSendingRequest(null);
+    }
+  };
+
   return (
     <aside className="chat-sidebar">
       <CreateRoomModal
         open={openCreate}
         onClose={() => setOpenCreate(false)}
-      />
-      <AddFriendModal
-        open={openAddFriend}
-        onClose={() => setOpenAddFriend(false)}
-        currentUser={currentUserName}
       />
 
       {/* ===== TABS ===== */}
@@ -109,21 +122,16 @@ export default function Sidebar({
           <Users size={16} />
           <span>NHÓM</span>
         </button>
+      </div>
+
+      {/*  CREATE GROUP BUTTON  */}
+      <div className="sidebar-create-section">
         <button
-          className="sidebar-tab sidebar-tab-create"
+          className="create-group-btn"
           onClick={() => setOpenCreate(true)}
-          title="Tạo nhóm chat"
         >
           <MessageSquare size={16} />
           <span>TẠO NHÓM</span>
-        </button>
-        <button
-          className="sidebar-tab sidebar-tab-add-friend"
-          onClick={() => setOpenAddFriend(true)}
-          title="Thêm bạn mới"
-        >
-          <UserPlus size={16} />
-          <span>THÊM BẠN</span>
         </button>
       </div>
 
@@ -145,12 +153,63 @@ export default function Sidebar({
         <div className="sidebar-chat-list">
           {searchLoading ? (
             <div className="sidebar-loading">Đang tìm...</div>
+          ) : activeTab === "friends" ? (
+            // Khi đang ở tab bạn bè và tìm kiếm, hiển thị kết quả với nút kết bạn
+            searchUsers.length > 0 ? (
+              <div className="user-list">
+                {searchUsers.map((user) => {
+                  const isFriend = friends.some(f => f.name === user.name);
+                  const isCurrentUser = user.name === currentUserName;
+                  
+                  return (
+                    <div
+                      key={user.name}
+                      className="user-list__item"
+                    >
+                      <img
+                        src={user.avatar || "https://i.pravatar.cc/36"}
+                        alt={user.name}
+                      />
+                      <span className="user-list__name">{user.name}</span>
+                      {!isFriend && !isCurrentUser && (
+                        <button
+                          className="add-friend-btn"
+                          onClick={() => handleAddFriend(user.name)}
+                          disabled={sendingRequest === user.name}
+                        >
+                          {sendingRequest === user.name ? (
+                            "Đang gửi..."
+                          ) : (
+                            <>
+                              <UserPlus size={14} />
+                              Kết bạn
+                            </>
+                          )}
+                        </button>
+                      )}
+                      {isFriend && <span className="friend-badge">Đã là bạn bè</span>}
+                      {isCurrentUser && <span className="friend-badge">Bạn</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="sidebar-loading" style={{ color: '#ff6b6b' }}>
+                Không tìm thấy người dùng "{keyword}"
+              </div>
+            )
           ) : (
-            <UserList
-              users={searchUsers}
-              activeUser={currentUser || ""}
-              onSelectUser={onSelectUser}
-            />
+            searchUsers.length > 0 ? (
+              <UserList
+                users={searchUsers}
+                activeUser={currentUser || ""}
+                onSelectUser={onSelectUser}
+              />
+            ) : (
+              <div className="sidebar-loading" style={{ color: '#ff6b6b' }}>
+                Không tìm thấy nhóm "{keyword}"
+              </div>
+            )
           )}
         </div>
       )}
