@@ -23,4 +23,40 @@
 
 .user-list__name {
   font-weight: 500;
+  flex: 1;
+}
+
+.add-friend-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.add-friend-btn:hover:not(:disabled) {
+  background: var(--primary-hover, #0056b3);
+  transform: translateY(-1px);
+}
+
+.add-friend-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.friend-badge {
+  font-size: 11px;
+  color: var(--text-muted, #888);
+  padding: 4px 8px;
+  background: var(--bg-hover, #f0f0f0);
+  border-radius: 4px;
+  white-space: nowrap;
 }

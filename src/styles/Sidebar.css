@@ -5,9 +5,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  padding: 16px;
+  padding: 16px 16px 8px 16px;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .sidebar-tab {
@@ -66,6 +65,60 @@
 
 .sidebar-tab.active::before {
   opacity: 0;
+}
+
+/* Create Group Section */
+.sidebar-create-section {
+  padding: 8px 16px 16px 16px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.create-group-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-group-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.create-group-btn:hover::before {
+  opacity: 0.08;
+}
+
+.create-group-btn:hover {
+  border-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.create-group-btn svg,
+.create-group-btn span {
+  position: relative;
+  z-index: 1;
 }
 
 .sidebar-tab-create,
