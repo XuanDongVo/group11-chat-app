@@ -1,19 +1,19 @@
 import { Phone, Video, Info, UserPlus } from "lucide-react";
-import type { ChatHeaderProps } from "../../../types/chat";
 import { useState } from "react";
-import InviteFriendsOffcanvas from "../../../components/ui/InviteFriendsOffcanvas";
+import type { ChatHeaderProps } from "../../../types/chat";
+
+import InviteFriendsModal from "./InviteRoomModal";
 
 export default function ChatHeader({
   avatar,
   name,
   status,
-  currentUser = "",
-  currentMembers = [],
-  onInviteFriends,
+  activeTab = "friends",
+  loggedInUser = "",
 }: ChatHeaderProps & {
-  currentUser?: string;
-  currentMembers?: string[];
-  onInviteFriends?: (usernames: string[]) => void;
+  activeTab?: "friends" | "groups";
+  loggedInUser?: string;
+  onJoinRoomFromInvite?: (roomId: string) => void;
 }) {
   const [showInvite, setShowInvite] = useState(false);
 
@@ -30,9 +30,17 @@ export default function ChatHeader({
       </div>
 
       <div className="chat-header__actions">
-        <button className="chat-header__action-btn" title="Mời bạn vào nhóm" onClick={() => setShowInvite(true)}>
-          <UserPlus size={18} />
-        </button>
+        {/*  chỉ hiện khi đang ở tab NHÓM */}
+        {activeTab === "groups" && (
+          <button
+            className="chat-header__action-btn"
+            title="Mời bạn vào nhóm"
+            onClick={() => setShowInvite(true)}
+          >
+            <UserPlus size={18} />
+          </button>
+        )}
+
         <button className="chat-header__action-btn" title="Call">
           <Phone size={18} />
         </button>
@@ -44,15 +52,12 @@ export default function ChatHeader({
         </button>
       </div>
 
-      <InviteFriendsOffcanvas
+      {/* Modal mời bạn */}
+      <InviteFriendsModal
         open={showInvite}
         onClose={() => setShowInvite(false)}
-        onInvite={(usernames) => {
-          setShowInvite(false);
-          onInviteFriends && onInviteFriends(usernames);
-        }}
-        currentMembers={currentMembers}
-        currentUser={currentUser}
+        roomId={name}                // room hiện tại (VD: NLU_FE_GROUP11)
+        currentUser={loggedInUser}   //  user đang login (VD: duc)
       />
     </header>
   );

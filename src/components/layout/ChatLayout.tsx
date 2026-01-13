@@ -1,11 +1,10 @@
-
 import Sidebar from "./Sidebar";
 import ChatHeader from "../../features/chat/components/ChatHeader";
 import MessageList from "../../features/chat/components/MessageList";
 import ChatInput from "../../features/chat/components/ChatInput";
 
 import type { ChatLayoutProps } from "../../types/chat";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ChatLayout({
   userList,
@@ -20,27 +19,46 @@ export default function ChatLayout({
   searchLoading,
   getRoomChatMessages,
   sendChatRoom,
+  joinRoom,
   friendsRefreshTrigger,
 }: ChatLayoutProps & {
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
   getRoomChatMessages: (roomName: string) => void;
   sendChatRoom: (roomName: string, message: string) => void;
+  joinRoom: (roomName: string) => void;
   friendsRefreshTrigger?: number;
 }) {
   const [activeTab, setActiveTab] = useState<"friends" | "groups">("friends");
   const handleTabChange = (tab: "friends" | "groups") => setActiveTab(tab);
 
-  // Xử lý chọn user/group
+  const loggedInUser = localStorage.getItem("username") || "";
+
+  // ✅ NEW: nghe sự kiện join room từ Header bell
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<{ roomId: string }>;
+      const roomId = ce.detail?.roomId;
+      if (!roomId) return;
+
+      setActiveTab("groups");
+      joinRoom(roomId);
+      getRoomChatMessages(roomId);
+    };
+
+    window.addEventListener("room-invite:join", handler as EventListener);
+    return () => window.removeEventListener("room-invite:join", handler as EventListener);
+  }, [joinRoom, getRoomChatMessages]);
+
   const handleSelect = (name: string) => {
     if (activeTab === "friends") {
       selectUser(name);
     } else {
+      joinRoom(name);
       getRoomChatMessages(name);
     }
   };
 
-  // Xử lý gửi tin nhắn
   const handleSend = (text: string) => {
     if (!currentUser) return;
     if (activeTab === "friends") {
@@ -52,7 +70,6 @@ export default function ChatLayout({
 
   return (
     <div className="chat-layout">
-      {/* SIDEBAR */}
       <Sidebar
         userList={userList}
         loading={loadingUsers}
@@ -66,21 +83,27 @@ export default function ChatLayout({
         refreshTrigger={friendsRefreshTrigger}
       />
 
-      {/* MAIN CHAT */}
       <main className="chat-main">
         {currentUser ? (
           <>
-            <ChatHeader avatar="https://i.pravatar.cc/100" name={currentUser} />
+            <ChatHeader
+              avatar="https://i.pravatar.cc/100"
+              name={currentUser}
+              activeTab={activeTab}
+              loggedInUser={loggedInUser}
+            />
 
-           {loadingMessages ? (
+            {loadingMessages ? (
               <div style={{ padding: 16 }}>Đang tải tin nhắn...</div>
             ) : (
-              <MessageList key={currentUser ?? "no-chat"} messages={messages} activeChatId={currentUser} />
+              <MessageList
+                key={currentUser ?? "no-chat"}
+                messages={messages}
+                activeChatId={currentUser}
+              />
             )}
 
-            <ChatInput
-              onSend={handleSend}
-            />
+            <ChatInput onSend={handleSend} />
           </>
         ) : (
           <div style={{ padding: 16 }}>Chọn một cuộc trò chuyện để bắt đầu</div>

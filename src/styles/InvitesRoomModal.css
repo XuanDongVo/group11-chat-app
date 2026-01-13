@@ -1,0 +1,208 @@
+.inviteDrawer__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.inviteDrawer {
+  position: fixed;
+  top: 96px;
+  right: 16px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  height: calc(100vh - 112px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.inviteDrawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.inviteDrawer__titleWrap {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inviteDrawer__title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #1f1f2b;
+  line-height: 1.2;
+}
+
+.inviteDrawer__subTitle {
+  font-size: 12px;
+  color: rgba(31, 31, 43, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+.inviteDrawer__close {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.inviteDrawer__close:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.inviteDrawer__searchWrap {
+  margin: 12px 14px 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inviteDrawer__searchIcon {
+  opacity: 0.6;
+  flex: 0 0 auto;
+}
+
+.inviteDrawer__searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14px;
+  color: #1f1f2b;
+}
+
+.inviteDrawer__content {
+  padding: 6px 8px 10px;
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.inviteDrawer__empty {
+  padding: 18px 10px;
+  text-align: center;
+  color: rgba(31, 31, 43, 0.65);
+  font-size: 14px;
+}
+
+.inviteDrawer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 6px;
+}
+
+.inviteDrawer__row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+}
+.inviteDrawer__row:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.inviteDrawer__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: rgba(99, 102, 241, 0.12);
+  color: rgba(99, 102, 241, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.inviteDrawer__meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inviteDrawer__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f1f2b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inviteDrawer__hint {
+  font-size: 12px;
+  color: rgba(31, 31, 43, 0.6);
+}
+
+.inviteDrawer__btn {
+  border: none;
+  cursor: pointer;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 12px;
+  background: rgba(99, 102, 241, 1);
+  color: #fff;
+  transition: transform 0.06s ease;
+  white-space: nowrap;
+}
+.inviteDrawer__btn:active {
+  transform: scale(0.98);
+}
+.inviteDrawer__btn.isDisabled,
+.inviteDrawer__btn:disabled {
+  background: rgba(0, 0, 0, 0.12);
+  color: rgba(31, 31, 43, 0.6);
+  cursor: not-allowed;
+}
+
+.inviteDrawer__footer {
+  padding: 10px 14px 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.inviteDrawer__footerText {
+  font-size: 12px;
+  color: rgba(31, 31, 43, 0.65);
+}
+
+@media (max-width: 480px) {
+  .inviteDrawer {
+    top: 78px;
+    right: 10px;
+    height: calc(100vh - 92px);
+    width: calc(100vw - 20px);
+  }
+}

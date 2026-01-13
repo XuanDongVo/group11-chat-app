@@ -1,0 +1,234 @@
+.roomBell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+
+/* Badge đỏ giống header badge nhưng nhỏ gọn */
+.roomBell__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 21px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.25);
+}
+
+/* Panel */
+.roomBell__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 420px;
+  max-width: calc(100vw - 24px);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+  z-index: 1000;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  font-synthesis: none;
+  color: #0f172a;
+}
+
+/* Mũi tên */
+.roomBell__panel::before {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.98);
+  border-left: 1px solid rgba(15, 23, 42, 0.10);
+  border-top: 1px solid rgba(15, 23, 42, 0.10);
+  transform: rotate(45deg);
+}
+
+.roomBell__panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.roomBell__title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.roomBell__count {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(102, 126, 234, 0.12);
+  color: #667eea;
+}
+
+.roomBell__empty {
+  padding: 14px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.roomBell__list {
+  max-height: 360px;
+  overflow: auto;
+  padding: 8px;
+}
+
+/* Item: 3 cột đều, spacing chuẩn */
+.roomBell__item {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: rgba(255, 255, 255, 0.75);
+  margin-bottom: 8px;
+}
+
+.roomBell__item:last-child {
+  margin-bottom: 0;
+}
+
+.roomBell__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.16) 0%, rgba(118, 75, 162, 0.16) 100%);
+  color: #5b5fe7;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.roomBell__content {
+  min-width: 0;
+}
+
+.roomBell__line1 {
+  font-size: 13px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roomBell__from {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.roomBell__text {
+  color: #334155;
+  font-weight: 600;
+}
+
+.roomBell__room {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Actions: gọn, đều, cùng height */
+.roomBell__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.roomBell__btnAction {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;          
+  line-height: 1;            
+  letter-spacing: 0;         
+  font-synthesis: none;      
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  white-space: nowrap;
+}
+
+.roomBell__btnAction:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px rgba(15, 23, 42, 0.10);
+}
+
+.roomBell__btnAction svg {
+  flex: 0 0 auto;
+}
+
+.roomBell__btnAction--accept {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.10);
+  color: #047857;
+}
+
+.roomBell__btnAction--reject {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.10);
+  color: #b91c1c;
+}
+
+/* Footer */
+.roomBell__footer {
+  padding: 10px 14px;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.roomBell__close {
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;         
+  line-height: 1;
+  letter-spacing: 0;
+  font-synthesis: none;
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.roomBell__close:hover {
+  background: rgba(15, 23, 42, 0.10);
+}

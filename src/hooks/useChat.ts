@@ -333,5 +333,6 @@ export function useChat() {
     sendToUser,
     getRoomChatMessages,
     sendChatRoom,
+    joinRoom,
   };
 }

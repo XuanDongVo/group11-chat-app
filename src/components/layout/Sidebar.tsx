@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { MessageSquare, Search, User, Users, UserPlus } from "lucide-react";
 import CreateRoomModal from "../room/CreateRoomModal";
 import SidebarItem from "../../features/chat/components/SidebarItem";
-import UserList from "../../features/chat/components/UserList";
+// import UserList from "../../features/chat/components/UserList";
 import type { SidebarProps } from "../../types/chat";
+import "../../styles/UserList.css";
 import "../../styles/Sidebar.css";
 import { getFriends, sendFriendRequest } from "../../services/friendService";
+import { listenRoomsOfUser } from "../../services/roomInviteService";
 
 export default function Sidebar({
-  userList,
+  // userList,
   loading,
   currentUser,
   onSelectUser,
@@ -28,10 +30,47 @@ export default function Sidebar({
 }) {
   const [keyword, setKeyword] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
-  const [friends, setFriends] = useState<{ name: string; avatar?: string; lastMessage?: string; time?: string; unread?: number }[]>([]);
+  const [friends, setFriends] = useState<
+    {
+      name: string;
+      avatar?: string;
+      lastMessage?: string;
+      time?: string;
+      unread?: number;
+    }[]
+  >([]);
   const [sendingRequest, setSendingRequest] = useState<string | null>(null);
   const currentUserName = localStorage.getItem("username") || "";
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [groupRooms, setGroupRooms] = useState<
+    {
+      name: string;
+      avatar?: string;
+      lastMessage?: string;
+      time?: string;
+      unread?: number;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (!currentUserName) return;
+
+    const unsub = listenRoomsOfUser(currentUserName, (rooms) => {
+      setGroupRooms(
+        rooms.map((r) => ({
+          name: r.roomId, // hiển thị theo roomId (vd: NLU_FE_GROUP11)
+          avatar:
+            "https://api.dicebear.com/7.x/identicon/svg?seed=" +
+            encodeURIComponent(r.roomId),
+          lastMessage: "",
+          time: "",
+          unread: 0,
+        }))
+      );
+    });
+
+    return () => unsub?.();
+  }, [currentUserName, refreshTrigger]);
 
   const handleSearchChange = (value: string) => {
     setKeyword(value);
@@ -43,11 +82,16 @@ export default function Sidebar({
 
     if (!value.trim()) return;
 
-    debounceRef.current = setTimeout(() => {
-      checkUserExist(value.trim());
-    }, 500);
+    // Tab BẠN BÈ: mới gọi checkUserExist
+    if (activeTab === "friends") {
+      debounceRef.current = setTimeout(() => {
+        checkUserExist(value.trim());
+      }, 500);
+    }
   };
 
+  // Polling để tự động refresh danh sách bạn bè mỗi 3 giây
+  const displayList = activeTab === "friends" ? friends : groupRooms;
   useEffect(() => {
     const fetchFriends = async () => {
       const data = await getFriends(currentUserName);
@@ -56,9 +100,9 @@ export default function Sidebar({
 
     fetchFriends();
 
-    // Polling để tự động refresh danh sách bạn bè mỗi 3 giây
+
     const intervalId = setInterval(() => {
-      if (activeTab === "friends") {
+      if (displayList) {
         fetchFriends();
       }
     }, 3000);
@@ -69,16 +113,10 @@ export default function Sidebar({
   const isSearching = keyword.trim().length > 0;
 
   // Danh sách group
-  const friendNames = friends.map(f => f.name);
-  const groups = userList.filter(
-    user =>
-      user.name !== currentUserName &&
-      !friendNames.includes(user.name)
-  );
-
-
-  // Chọn danh sách hiển thị dựa trên tab đang active
-  const displayList = activeTab === "friends" ? friends : groups;
+  // const friendNames = friends.map((f) => f.name);
+  // const groups = userList.filter(
+  //   (user) => user.name !== currentUserName && !friendNames.includes(user.name)
+  // );
 
   const handleAddFriend = async (username: string) => {
     if (username === currentUserName) {
@@ -101,10 +139,7 @@ export default function Sidebar({
 
   return (
     <aside className="chat-sidebar">
-      <CreateRoomModal
-        open={openCreate}
-        onClose={() => setOpenCreate(false)}
-      />
+      <CreateRoomModal open={openCreate} onClose={() => setOpenCreate(false)} />
 
       {/* ===== TABS ===== */}
       <div className="sidebar-tabs">
@@ -139,7 +174,9 @@ export default function Sidebar({
       <div className="sidebar-search">
         <Search size={16} />
         <input
-          placeholder={`Tìm kiếm ${activeTab === "groups" ? "nhóm" : "bạn bè"}...`}
+          placeholder={`Tìm kiếm ${
+            activeTab === "groups" ? "nhóm" : "bạn bè"
+          }...`}
           value={keyword}
           onChange={(e) => handleSearchChange(e.target.value)}
         />
@@ -158,14 +195,11 @@ export default function Sidebar({
             searchUsers.length > 0 ? (
               <div className="user-list">
                 {searchUsers.map((user) => {
-                  const isFriend = friends.some(f => f.name === user.name);
+                  const isFriend = friends.some((f) => f.name === user.name);
                   const isCurrentUser = user.name === currentUserName;
-                  
+
                   return (
-                    <div
-                      key={user.name}
-                      className="user-list__item"
-                    >
+                    <div key={user.name} className="user-list__item">
                       <img
                         src={user.avatar || "https://i.pravatar.cc/36"}
                         alt={user.name}
@@ -187,29 +221,52 @@ export default function Sidebar({
                           )}
                         </button>
                       )}
-                      {isFriend && <span className="friend-badge">Đã là bạn bè</span>}
-                      {isCurrentUser && <span className="friend-badge">Bạn</span>}
+                      {isFriend && (
+                        <span className="friend-badge">Đã là bạn bè</span>
+                      )}
+                      {isCurrentUser && (
+                        <span className="friend-badge">Bạn</span>
+                      )}
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <div className="sidebar-loading" style={{ color: '#ff6b6b' }}>
+              <div className="sidebar-loading" style={{ color: "#ff6b6b" }}>
                 Không tìm thấy người dùng "{keyword}"
               </div>
             )
           ) : (
-            searchUsers.length > 0 ? (
-              <UserList
-                users={searchUsers}
-                activeUser={currentUser || ""}
-                onSelectUser={onSelectUser}
-              />
-            ) : (
-              <div className="sidebar-loading" style={{ color: '#ff6b6b' }}>
-                Không tìm thấy nhóm "{keyword}"
-              </div>
-            )
+            <>
+              {(() => {
+                const k = keyword.trim().toLowerCase();
+                const filteredGroups = groupRooms.filter((r) =>
+                  r.name.toLowerCase().includes(k)
+                );
+
+                return filteredGroups.length > 0 ? (
+                  filteredGroups.map((room) => (
+                    <div
+                      key={room.name}
+                      onClick={() => onSelectUser(room.name)}
+                    >
+                      <SidebarItem
+                        avatar={room.avatar || "https://i.pravatar.cc/40"}
+                        name={room.name}
+                        lastMessage={room.lastMessage || ""}
+                        time={room.time}
+                        unread={room.unread}
+                        active={currentUser === room.name}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="sidebar-loading" style={{ color: "#ff6b6b" }}>
+                    Không tìm thấy nhóm "{keyword}"
+                  </div>
+                );
+              })()}
+            </>
           )}
         </div>
       )}
@@ -219,10 +276,7 @@ export default function Sidebar({
         <div className="sidebar-chat-list">
           {displayList.length > 0 ? (
             displayList.map((user) => (
-              <div
-                key={user.name}
-                onClick={() => onSelectUser(user.name)}
-              >
+              <div key={user.name} onClick={() => onSelectUser(user.name)}>
                 <SidebarItem
                   avatar={user.avatar || "https://i.pravatar.cc/40"}
                   name={user.name}
