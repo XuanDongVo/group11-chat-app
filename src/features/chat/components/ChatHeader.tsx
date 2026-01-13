@@ -2,7 +2,7 @@ import { Phone, Video, Info, UserPlus } from "lucide-react";
 import { useState } from "react";
 import type { ChatHeaderProps } from "../../../types/chat";
 
-import InviteFriendsModal from "./InviteFriendsModal";
+import InviteFriendsModal from "./InviteRoomModal";
 import RoomInvitesBell from "./RoomInvitesBell";
 
 export default function ChatHeader({

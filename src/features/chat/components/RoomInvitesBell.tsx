@@ -5,13 +5,11 @@ import {
   listenPendingRoomInvites,
   type RoomInvite,
 } from "../../../services/roomInviteService";
+import type { RoomProps } from "../../../types/RoomInvites";
 
-type Props = {
-  username: string;
-  onJoinRoom: (roomId: string) => void; // gọi joinRoom(roomId)
-};
 
-export default function RoomInvitesBell({ username, onJoinRoom }: Props) {
+
+export default function RoomInvitesBell({ username, onJoinRoom }: RoomProps) {
   const [open, setOpen] = useState(false);
   const [invites, setInvites] = useState<RoomInvite[]>([]);
 
