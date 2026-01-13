@@ -8,6 +8,7 @@ import "../../styles/UserList.css";
 import "../../styles/Sidebar.css";
 import { getFriends, sendFriendRequest } from "../../services/friendService";
 import { listenRoomsOfUser } from "../../services/roomInviteService";
+import Swal from "sweetalert2";
 
 export default function Sidebar({
   // userList,
@@ -58,7 +59,7 @@ export default function Sidebar({
     const unsub = listenRoomsOfUser(currentUserName, (rooms) => {
       setGroupRooms(
         rooms.map((r) => ({
-          name: r.roomId, // hiển thị theo roomId (vd: NLU_FE_GROUP11)
+          name: r.roomId,
           avatar:
             "https://api.dicebear.com/7.x/identicon/svg?seed=" +
             encodeURIComponent(r.roomId),
@@ -127,11 +128,15 @@ export default function Sidebar({
     setSendingRequest(username);
     try {
       await sendFriendRequest(currentUserName, username);
-      alert("Đã gửi lời mời kết bạn thành công!");
-      setKeyword(""); // Clear search after sending request
+      Swal.fire({
+        title: "Thành công!",
+        text: "Đã gửi lời mời kết bạn thành công!",
+        icon: "success",
+        confirmButtonText: "Đóng",
+      });
+      setKeyword("");
     } catch (error) {
       console.error("Error sending friend request:", error);
-      alert("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setSendingRequest(null);
     }
@@ -174,9 +179,8 @@ export default function Sidebar({
       <div className="sidebar-search">
         <Search size={16} />
         <input
-          placeholder={`Tìm kiếm ${
-            activeTab === "groups" ? "nhóm" : "bạn bè"
-          }...`}
+          placeholder={`Tìm kiếm ${activeTab === "groups" ? "nhóm" : "bạn bè"
+            }...`}
           value={keyword}
           onChange={(e) => handleSearchChange(e.target.value)}
         />
@@ -199,7 +203,11 @@ export default function Sidebar({
                   const isCurrentUser = user.name === currentUserName;
 
                   return (
-                    <div key={user.name} className="user-list__item">
+                    <div key={user.name} className="user-list__item" onClick={() => {
+                      if (isFriend) {
+                        onSelectUser(user.name);
+                      }
+                    }}>
                       <img
                         src={user.avatar || "https://i.pravatar.cc/36"}
                         alt={user.name}
