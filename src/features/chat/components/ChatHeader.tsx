@@ -3,7 +3,6 @@ import { useState } from "react";
 import type { ChatHeaderProps } from "../../../types/chat";
 
 import InviteFriendsModal from "./InviteRoomModal";
-import RoomInvitesBell from "./RoomInvitesBell";
 
 export default function ChatHeader({
   avatar,
@@ -11,7 +10,6 @@ export default function ChatHeader({
   status,
   activeTab = "friends",
   loggedInUser = "",
-  onJoinRoomFromInvite,
 }: ChatHeaderProps & {
   activeTab?: "friends" | "groups";
   loggedInUser?: string;
@@ -32,12 +30,6 @@ export default function ChatHeader({
       </div>
 
       <div className="chat-header__actions">
-        {/* Lời mời vào nhóm */}
-        <RoomInvitesBell
-          username={loggedInUser}
-          onJoinRoom={(roomId) => onJoinRoomFromInvite?.(roomId)}
-        />
-
         {/*  chỉ hiện khi đang ở tab NHÓM */}
         {activeTab === "groups" && (
           <button

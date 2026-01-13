@@ -4,7 +4,7 @@ import MessageList from "../../features/chat/components/MessageList";
 import ChatInput from "../../features/chat/components/ChatInput";
 
 import type { ChatLayoutProps } from "../../types/chat";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ChatLayout({
   userList,
@@ -19,7 +19,7 @@ export default function ChatLayout({
   searchLoading,
   getRoomChatMessages,
   sendChatRoom,
-  joinRoom, // nhận từ useChat()
+  joinRoom,
   friendsRefreshTrigger,
 }: ChatLayoutProps & {
   searchUsers: { name: string; avatar?: string }[];
@@ -33,6 +33,22 @@ export default function ChatLayout({
   const handleTabChange = (tab: "friends" | "groups") => setActiveTab(tab);
 
   const loggedInUser = localStorage.getItem("username") || "";
+
+  // ✅ NEW: nghe sự kiện join room từ Header bell
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<{ roomId: string }>;
+      const roomId = ce.detail?.roomId;
+      if (!roomId) return;
+
+      setActiveTab("groups");
+      joinRoom(roomId);
+      getRoomChatMessages(roomId);
+    };
+
+    window.addEventListener("room-invite:join", handler as EventListener);
+    return () => window.removeEventListener("room-invite:join", handler as EventListener);
+  }, [joinRoom, getRoomChatMessages]);
 
   const handleSelect = (name: string) => {
     if (activeTab === "friends") {
@@ -75,12 +91,6 @@ export default function ChatLayout({
               name={currentUser}
               activeTab={activeTab}
               loggedInUser={loggedInUser}
-              onJoinRoomFromInvite={(roomId) => {
-                // Khi bấm "Tham gia" từ chuông notifycation invite
-                setActiveTab("groups");
-                joinRoom(roomId);
-                getRoomChatMessages(roomId);
-              }}
             />
 
             {loadingMessages ? (
