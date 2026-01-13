@@ -8,6 +8,7 @@ import {
 import { wsService } from '../../services/websocket';
 import '../../styles/CreateRoomModal.css';
 import type  {CreateRoomModalProps} from '../../types/room';
+import { addMemberToRoom } from '../../services/roomInviteService';
 
 
 export default function CreateRoomModal({ open, onClose }: CreateRoomModalProps) {
@@ -32,7 +33,7 @@ export default function CreateRoomModal({ open, onClose }: CreateRoomModalProps)
         },
       },
     });
-
+    addMemberToRoom(roomName.trim(), localStorage.getItem("username") || "");
     setRoomName('');
     onClose();
   };

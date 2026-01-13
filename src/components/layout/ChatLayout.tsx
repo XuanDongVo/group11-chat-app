@@ -1,4 +1,3 @@
-
 import Sidebar from "./Sidebar";
 import ChatHeader from "../../features/chat/components/ChatHeader";
 import MessageList from "../../features/chat/components/MessageList";
@@ -20,27 +19,30 @@ export default function ChatLayout({
   searchLoading,
   getRoomChatMessages,
   sendChatRoom,
+  joinRoom, // nhận từ useChat()
   friendsRefreshTrigger,
 }: ChatLayoutProps & {
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
   getRoomChatMessages: (roomName: string) => void;
   sendChatRoom: (roomName: string, message: string) => void;
+  joinRoom: (roomName: string) => void;
   friendsRefreshTrigger?: number;
 }) {
   const [activeTab, setActiveTab] = useState<"friends" | "groups">("friends");
   const handleTabChange = (tab: "friends" | "groups") => setActiveTab(tab);
 
-  // Xử lý chọn user/group
+  const loggedInUser = localStorage.getItem("username") || "";
+
   const handleSelect = (name: string) => {
     if (activeTab === "friends") {
       selectUser(name);
     } else {
+      joinRoom(name);
       getRoomChatMessages(name);
     }
   };
 
-  // Xử lý gửi tin nhắn
   const handleSend = (text: string) => {
     if (!currentUser) return;
     if (activeTab === "friends") {
@@ -52,7 +54,6 @@ export default function ChatLayout({
 
   return (
     <div className="chat-layout">
-      {/* SIDEBAR */}
       <Sidebar
         userList={userList}
         loading={loadingUsers}
@@ -66,21 +67,33 @@ export default function ChatLayout({
         refreshTrigger={friendsRefreshTrigger}
       />
 
-      {/* MAIN CHAT */}
       <main className="chat-main">
         {currentUser ? (
           <>
-            <ChatHeader avatar="https://i.pravatar.cc/100" name={currentUser} />
+            <ChatHeader
+              avatar="https://i.pravatar.cc/100"
+              name={currentUser}
+              activeTab={activeTab}
+              loggedInUser={loggedInUser}
+              onJoinRoomFromInvite={(roomId) => {
+                // Khi bấm "Tham gia" từ chuông notifycation invite
+                setActiveTab("groups");
+                joinRoom(roomId);
+                getRoomChatMessages(roomId);
+              }}
+            />
 
-           {loadingMessages ? (
+            {loadingMessages ? (
               <div style={{ padding: 16 }}>Đang tải tin nhắn...</div>
             ) : (
-              <MessageList key={currentUser ?? "no-chat"} messages={messages} activeChatId={currentUser} />
+              <MessageList
+                key={currentUser ?? "no-chat"}
+                messages={messages}
+                activeChatId={currentUser}
+              />
             )}
 
-            <ChatInput
-              onSend={handleSend}
-            />
+            <ChatInput onSend={handleSend} />
           </>
         ) : (
           <div style={{ padding: 16 }}>Chọn một cuộc trò chuyện để bắt đầu</div>

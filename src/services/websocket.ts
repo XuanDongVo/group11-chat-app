@@ -215,6 +215,10 @@ class WebSocketService {
 
   onMessage(handler: MessageHandler) {
     this.messageHandlers.push(handler);
+
+      return () => {
+      this.removeMessageHandler(handler);
+    };
   }
 
   removeMessageHandler(handler: MessageHandler) {

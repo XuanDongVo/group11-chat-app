@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { wsService } from "./websocket";
 
 export type ServerMessage = {
@@ -9,13 +9,13 @@ export type ServerMessage = {
 interface WebSocketContextValue {
   isConnected: boolean;
   send: (data: any) => void;
-  onMessage: (handler: (message: ServerMessage) => void) => void;
+  onMessage: (handler: (message: ServerMessage) => void) => () => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextValue>({
   isConnected: false,
   send: () => {},
-  onMessage: () => {},
+  onMessage: () => () => {},
 });
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
@@ -38,13 +38,21 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+    const send = useCallback((data: any) => {
+      wsService.send(data);
+    }, []);
+
+    const onMessage = useCallback((handler: (message: ServerMessage) => void) => {
+      return wsService.onMessage(handler);
+    }, []);
+
+    const value = useMemo(() => ({ isConnected, send, onMessage }), [isConnected, send, onMessage]);
+
   return (
     <WebSocketContext.Provider
-      value={{
-        isConnected,
-        send: wsService.send.bind(wsService),
-        onMessage: wsService.onMessage.bind(wsService),
-      }}
+      value={
+        value
+      }
     >
       {children}
     </WebSocketContext.Provider>

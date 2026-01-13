@@ -65,6 +65,9 @@ export interface ChatLayoutProps {
   selectUser: (username: string) => void;
   sendToUser: (username: string, message: string, isAudio?: boolean) => void;
   checkUserExist: (username: string) => void;
+  activeTab: "friends" | "groups";
+  onTabChange: (tab: "friends" | "groups") => void;
+  refreshTrigger?: number;
 }
 
 
