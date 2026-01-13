@@ -16,7 +16,7 @@ export default function Header({
   onFriendsUpdate,
 }: HeaderProps & { onFriendsUpdate?: () => void }) {
   const [open, setOpen] = useState(false);
-  const [currentEffect, setCurrentEffect] = useState<string | null>(null);
+  const [currentEffect, setCurrentEffect] = useState<string | null>("snow");
   const { theme, toggleTheme } = useTheme();
 
   // Offcanvas for friend invites
