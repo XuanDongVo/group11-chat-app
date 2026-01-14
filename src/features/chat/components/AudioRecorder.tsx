@@ -1,11 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Mic, Square, X, Send } from "lucide-react";
 import "../../../styles/AudioRecorder.css";
-
-interface AudioRecorderProps {
-  onSendAudio: (audioBase64: string) => void;
-  onCancel: () => void;
-}
+import type { AudioRecorderProps } from "../../../types/chat";
 
 const MAX_RECORDING_TIME = 60; // 60 seconds max
 const MAX_FILE_SIZE = 500 * 1024; // 500KB max (safe for WebSocket)
