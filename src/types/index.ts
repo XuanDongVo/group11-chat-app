@@ -73,6 +73,13 @@ export interface ChatAreaProps {
 // Message Handler Type
 export type MessageHandler = (message: ServerMessage) => void;
 
+// WebSocket Context
+export interface WebSocketContextValue {
+  isConnected: boolean;
+  send: (data: any) => void;
+  onMessage: (handler: (message: ServerMessage) => void) => () => void;
+}
+
 export type EffectType =
   | "snow"
   | "confetti"
