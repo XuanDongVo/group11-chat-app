@@ -6,7 +6,7 @@ import type { HeaderProps } from "../../types/user";
 import EffectPicker from "../effects/EffectPicker";
 import { useEffect, useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
-import { getFriendRequests, cancelFriendRequest, acceptFriendRequest } from "../../services/friendService";
+import { subscribeFriendRequests, cancelFriendRequest, acceptFriendRequest } from "../../services/friendService";
 import RoomInvitesBell from "../../features/chat/components/RoomInvitesBell";
 
 export default function Header({
@@ -23,35 +23,30 @@ export default function Header({
   const [showInvites, setShowInvites] = useState(false);
   const [friendInvites, setFriendInvites] = useState<FriendInvite[]>([]);
 
-  const fetchFriendInvites = async () => {
-    const invitesRaw = await getFriendRequests(username);
-    const invites: (FriendInvite & { _docId: string })[] = invitesRaw.map((invite: any) => ({
-      _docId: invite.id || invite._docId || invite.docId || "",
-      name: invite.from || invite.name || "Unknown",
-      avatar: invite.avatar || "https://i.pravatar.cc/40",
-    }));
-    setFriendInvites(invites);
-  };
-
+  // Lắng nghe thay đổi realtime của lời mời kết bạn
   useEffect(() => {
-    fetchFriendInvites();
-  }, [showInvites]);
+    const unsubscribe = subscribeFriendRequests(username, (invitesRaw) => {
+      const invites: (FriendInvite & { _docId: string })[] = invitesRaw.map((invite: any) => ({
+        _docId: invite.id || invite._docId || invite.docId || "",
+        name: invite.from || invite.name || "Unknown",
+        avatar: invite.avatar || "https://i.pravatar.cc/40",
+      }));
+      setFriendInvites(invites);
+    });
+
+    return () => unsubscribe();
+  }, [username]);
 
   const handleAcceptInvite = (inviteDocId: string) => {
     const invite = friendInvites.find((i) => i._docId === inviteDocId);
     if (!invite) return;
     acceptFriendRequest(inviteDocId, invite.name, username).then(() => {
-      fetchFriendInvites();
       if (onFriendsUpdate) onFriendsUpdate();
     });
   };
 
   const handleRejectInvite = (inviteDocId: string) => {
-    const invite = friendInvites.find((i) => i._docId === inviteDocId);
-    if (!invite) return;
-    cancelFriendRequest(inviteDocId).then(() => {
-      fetchFriendInvites();
-    });
+    cancelFriendRequest(inviteDocId);
   };
 
   return (
