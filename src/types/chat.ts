@@ -5,6 +5,12 @@ export interface ChatHeaderProps {
   status?: string;
 }
 
+// Audio Recorder
+export interface AudioRecorderProps {
+  onSendAudio: (audioBase64: string) => void;
+  onCancel: () => void;
+}
+
 // Message
 export interface MessageBubbleProps {
   message: ChatMessage;

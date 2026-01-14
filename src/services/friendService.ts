@@ -10,7 +10,8 @@ import {
   query,
   where,
   addDoc,
-   arrayUnion
+  arrayUnion,
+  onSnapshot
 } from "firebase/firestore";
 import app from "./firebase";
 
@@ -36,6 +37,27 @@ export async function getFriendRequests(UserName: string) {
   );
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+}
+
+// Lắng nghe thay đổi realtime của lời mời kết bạn
+export function subscribeFriendRequests(
+  userName: string,
+  callback: (requests: any[]) => void
+) {
+  const q = query(
+    collection(db, "friend_requests"),
+    where("to", "==", userName)
+  );
+  
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const requests = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    callback(requests);
+  });
+  
+  return unsubscribe;
 }
 
 // Hủy/từ chối yêu cầu kết bạn (chỉ xóa request)

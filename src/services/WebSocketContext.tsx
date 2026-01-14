@@ -1,16 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { wsService } from "./websocket";
-
-export type ServerMessage = {
-  event: string;
-  data?: any;
-};
-
-interface WebSocketContextValue {
-  isConnected: boolean;
-  send: (data: any) => void;
-  onMessage: (handler: (message: ServerMessage) => void) => () => void;
-}
+import type { ServerMessage, WebSocketContextValue } from "../types";
 
 const WebSocketContext = createContext<WebSocketContextValue>({
   isConnected: false,
