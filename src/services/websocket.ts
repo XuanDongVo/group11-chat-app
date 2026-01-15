@@ -128,7 +128,12 @@ class WebSocketService {
   send(message: ChatMessage) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
-      console.log('Sent message:', message);
+      
+      // Chỉ log những message quan trọng, bỏ qua CHECK_USER_ONLINE để tránh spam
+      const event = message.data?.event;
+      if (event && event !== 'CHECK_USER_ONLINE' && event !== 'GET_USER_LIST') {
+        console.log('Sent message:', message);
+      }
     } else {
       // console.error('WebSocket không được kết nối');
       throw new Error('WebSocket không được kết nối');

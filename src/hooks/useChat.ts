@@ -120,8 +120,22 @@ export function useChat() {
   // Map để lưu online status và lastSeen của tất cả users (cho sidebar)
   const [usersOnlineMap, setUsersOnlineMap] = useState<Map<string, { isOnline: boolean; lastSeen?: number }>>(new Map());
 
+  // Tracking để tránh gửi duplicate requests
+  const lastCheckTimeRef = useRef<Map<string, number>>(new Map());
+  const CHECK_INTERVAL = 3000; // Minimum 3 giây giữa các lần check
+
   // Define checkUserOnline trước để có thể dùng trong handleMessage
   const checkUserOnline = useCallback((username: string) => {
+    const now = Date.now();
+    const lastCheck = lastCheckTimeRef.current.get(username);
+    
+    // Chỉ gửi request nếu đã qua ít nhất CHECK_INTERVAL ms từ lần check trước
+    if (lastCheck && now - lastCheck < CHECK_INTERVAL) {
+      // Request bị throttle - không gửi
+      return;
+    }
+    
+    lastCheckTimeRef.current.set(username, now);
     send({
       action: "onchat",
       data: {
@@ -131,16 +145,24 @@ export function useChat() {
     });
   }, [send]);
 
-  // Check online cho nhiều users (dùng cho sidebar)
+  // Check online cho nhiều users (dùng cho sidebar) - với throttle
   const checkMultipleUsersOnline = useCallback((usernames: string[]) => {
+    const now = Date.now();
+    
     usernames.forEach(username => {
-      send({
-        action: "onchat",
-        data: {
-          event: "CHECK_USER_ONLINE",
-          data: { user: username },
-        },
-      });
+      const lastCheck = lastCheckTimeRef.current.get(username);
+      
+      // Chỉ check những user chưa được check gần đây
+      if (!lastCheck || now - lastCheck >= CHECK_INTERVAL) {
+        lastCheckTimeRef.current.set(username, now);
+        send({
+          action: "onchat",
+          data: {
+            event: "CHECK_USER_ONLINE",
+            data: { user: username },
+          },
+        });
+      }
     });
   }, [send]);
 
@@ -167,13 +189,8 @@ export function useChat() {
 
           setLoadingMessages(false);
           
-          // Nếu có tin nhắn mới từ user đang chat, refresh status ngay
-          if (serverMessages.length > 0 && currentUserRef.current) {
-            const latestMessage = serverMessages[serverMessages.length - 1];
-            if (latestMessage.from === currentUserRef.current) {
-              checkUserOnline(currentUserRef.current);
-            }
-          }
+          // REMOVED: Không tự động check online khi nhận tin nhắn để tránh spam
+          // Auto-refresh interval sẽ xử lý việc này
           break;
         }
 
@@ -257,7 +274,7 @@ export function useChat() {
         case "USER_STATUS_CHANGED": {
           const changedUser = message.data?.user || message.data?.username;
           
-          // Nếu đang chat với user này, refresh status ngay
+          // Nếu đang chat với user này, refresh status (có throttle protection)
           if (changedUser && changedUser === currentUserRef.current) {
             checkUserOnline(changedUser);
           }
@@ -370,15 +387,18 @@ export function useChat() {
     });
   };
 
-  // Auto refresh online status mỗi 3 giây (nhanh hơn để responsive)
+  // Auto refresh online status mỗi 5 giây (đủ nhanh nhưng không spam)
   useEffect(() => {
     if (!currentUserRef.current) return;
+
+    // Check ngay khi mount
+    checkUserOnline(currentUserRef.current);
 
     const intervalId = setInterval(() => {
       if (currentUserRef.current) {
         checkUserOnline(currentUserRef.current);
       }
-    }, 3000); // Refresh mỗi 3 giây
+    }, 5000); // Tăng lên 5 giây để giảm load, throttle sẽ đảm bảo không spam
 
     return () => clearInterval(intervalId);
   }, [currentUser, checkUserOnline]); // Re-run khi currentUser thay đổi
