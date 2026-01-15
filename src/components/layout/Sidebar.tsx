@@ -21,6 +21,8 @@ export default function Sidebar({
   activeTab,
   onTabChange,
   refreshTrigger,
+  usersOnlineMap,
+  checkMultipleUsersOnline,
 }: SidebarProps & {
   checkUserExist: (username: string) => void;
   searchUsers: { name: string; avatar?: string }[];
@@ -28,6 +30,8 @@ export default function Sidebar({
   activeTab: "friends" | "groups";
   onTabChange: (tab: "friends" | "groups") => void;
   refreshTrigger?: number;
+  usersOnlineMap?: Map<string, { isOnline: boolean; lastSeen?: number }>;
+  checkMultipleUsersOnline?: (usernames: string[]) => void;
 }) {
   const [keyword, setKeyword] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
@@ -97,19 +101,25 @@ export default function Sidebar({
     const fetchFriends = async () => {
       const data = await getFriends(currentUserName);
       setFriends(data);
+      
+      // Check online status cho tất cả friends
+      if (data.length > 0 && checkMultipleUsersOnline) {
+        const friendNames = data.map((f: { name: string }) => f.name);
+        checkMultipleUsersOnline(friendNames);
+      }
     };
 
+    if (!currentUserName) return;
+    
     fetchFriends();
 
 
     const intervalId = setInterval(() => {
-      if (displayList) {
-        fetchFriends();
-      }
+      fetchFriends();
     }, 3000);
 
     return () => clearInterval(intervalId);
-  }, [currentUser, refreshTrigger, activeTab]);
+  }, [currentUserName, refreshTrigger, activeTab, checkMultipleUsersOnline]);
 
   const isSearching = keyword.trim().length > 0;
 
@@ -292,6 +302,8 @@ export default function Sidebar({
                   time={user.time}
                   unread={user.unread}
                   active={currentUser === user.name}
+                  isOnline={activeTab === "friends" && usersOnlineMap ? usersOnlineMap.get(user.name)?.isOnline : undefined}
+                  lastSeen={activeTab === "friends" && usersOnlineMap ? usersOnlineMap.get(user.name)?.lastSeen : undefined}
                 />
               </div>
             ))
