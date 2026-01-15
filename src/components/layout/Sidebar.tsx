@@ -95,14 +95,14 @@ export default function Sidebar({
     }
   };
 
-  // Polling để tự động refresh danh sách bạn bè mỗi 3 giây
+  // Polling để tự động refresh danh sách bạn bè mỗi 10 giây (giảm tần suất)
   const displayList = activeTab === "friends" ? friends : groupRooms;
   useEffect(() => {
     const fetchFriends = async () => {
       const data = await getFriends(currentUserName);
       setFriends(data);
       
-      // Check online status cho tất cả friends
+      // Check online status cho tất cả friends - throttle đã được xử lý trong hook
       if (data.length > 0 && checkMultipleUsersOnline) {
         const friendNames = data.map((f: { name: string }) => f.name);
         checkMultipleUsersOnline(friendNames);
@@ -111,12 +111,13 @@ export default function Sidebar({
 
     if (!currentUserName) return;
     
+    // Fetch ngay lần đầu
     fetchFriends();
 
-
+    // Tăng interval lên 10 giây để giảm load
     const intervalId = setInterval(() => {
       fetchFriends();
-    }, 3000);
+    }, 10000); // Tăng từ 3000 lên 10000ms
 
     return () => clearInterval(intervalId);
   }, [currentUserName, refreshTrigger, activeTab, checkMultipleUsersOnline]);
