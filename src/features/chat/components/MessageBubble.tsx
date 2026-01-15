@@ -31,10 +31,16 @@ export default function MessageBubble({ message, mine = false, onImageClick, ava
   if (message.type === "audio" && message.audio) {
     return (
       <div className={clsx("message", "message--audio", mine && "mine")}>
+        {/* Hiển thị tên người gửi phía trên bubble, chỉ cho tin nhắn người khác */}
         {!mine && (
           <img src={avatar} alt={message.from} className="message__avatar" />
         )}
         <div className="message__content">
+          {!mine && (
+            <div className="message__from" style={{ fontWeight: 500, fontSize: 13, marginBottom: 2, marginLeft: 20, marginTop: 2, color: "#333333",  opacity: 0.8 }}>
+              {message.from}
+            </div>
+          )}
           <div className="message__audio">
             <Volume2 size={16} className="audio-icon" />
             <audio src={message.audio} controls className="audio-player" />
@@ -52,10 +58,16 @@ export default function MessageBubble({ message, mine = false, onImageClick, ava
 
   return (
     <div className={clsx("message", mine && "mine")}>
+      {/* Hiển thị tên người gửi phía trên bubble, chỉ cho tin nhắn người khác */}
       {!mine && (
         <img src={avatar} alt={message.from} className="message__avatar" />
       )}
       <div className="message__content">
+        {!mine && (
+          <div className="message__from" style={{ fontWeight: 500, fontSize: 13, marginBottom: 2, marginLeft: 20, marginTop: 2, color: "#333333", opacity: 0.8 }}>
+            {message.from}
+          </div>
+        )}
         {/* TEXT */}
         {message.type === "text" && (
           <div className="message__bubble">

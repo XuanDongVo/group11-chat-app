@@ -78,7 +78,7 @@ export default function MessageList({
       const t = setTimeout(() => scrollToBottom("auto"), 120);
       return () => clearTimeout(t);
     }
-  }, [lastMsgKey]); 
+  }, [lastMsgKey]);
 
   // Extract all images from messages
   const allImages = useMemo(() => {
@@ -95,55 +95,55 @@ export default function MessageList({
     }
   };
 
-return (
-  <>
-    <div className="message-list-container" style={{ position: "relative" }}>
-      <div className="chat-messages" ref={listRef} onScroll={handleScroll}>
-        {messages.map((msg, idx) => {
-          const sender = msg.from;
-          const avatar = `https://i.pravatar.cc/100?u=${sender}`;
-          return (
-            <MessageBubble
-              key={idx}
-              message={msg}
-              mine={sender === currentUser}
-              onImageClick={handleImageClick}
-              avatar={avatar}
-            />
-          );
-        })}
-        <div ref={bottomRef} />
+  return (
+    <>
+      <div className="message-list-container" style={{ position: "relative" }}>
+        <div className="chat-messages" ref={listRef} onScroll={handleScroll}>
+          {messages.map((msg, idx) => {
+            const sender = msg.from;
+            const avatar = `https://i.pravatar.cc/100?u=${sender}`;
+            return (
+              <MessageBubble
+                key={idx}
+                message={msg}
+                mine={sender === currentUser}
+                onImageClick={handleImageClick}
+                avatar={avatar}
+              />
+            );
+          })}
+          <div ref={bottomRef} />
+        </div>
+
+        {showScrollBtn && (
+          <button
+            type="button"
+            className="scroll-to-bottom-btn"
+            onClick={() => {
+              scrollToBottom("smooth");
+              setUnreadCount(0);
+              setShowScrollBtn(false);
+              setIsAtBottom(true);
+            }}
+            aria-label="Cuộn xuống tin nhắn mới nhất"
+            title="Cuộn xuống tin nhắn mới nhất"
+          >
+            ↓
+            {unreadCount > 0 && (
+              <span className="scroll-to-bottom-badge">{unreadCount}</span>
+            )}
+          </button>
+        )}
       </div>
 
-      {showScrollBtn && (
-        <button
-          type="button"
-          className="scroll-to-bottom-btn"
-          onClick={() => {
-            scrollToBottom("smooth");
-            setUnreadCount(0);
-            setShowScrollBtn(false);
-            setIsAtBottom(true);
-          }}
-          aria-label="Cuộn xuống tin nhắn mới nhất"
-          title="Cuộn xuống tin nhắn mới nhất"
-        >
-          ↓
-          {unreadCount > 0 && (
-            <span className="scroll-to-bottom-badge">{unreadCount}</span>
-          )}
-        </button>
+      {lightboxOpen && allImages.length > 0 && (
+        <ImageLightbox
+          images={allImages}
+          initialIndex={selectedImageIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
       )}
-    </div>
-
-    {lightboxOpen && allImages.length > 0 && (
-      <ImageLightbox
-        images={allImages}
-        initialIndex={selectedImageIndex}
-        onClose={() => setLightboxOpen(false)}
-      />
-    )}
-  </>
-);
+    </>
+  );
 
 }
