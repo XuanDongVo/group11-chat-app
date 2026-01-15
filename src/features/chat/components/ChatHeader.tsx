@@ -10,12 +10,39 @@ export default function ChatHeader({
   status,
   activeTab = "friends",
   loggedInUser = "",
+  userOnlineStatus,
 }: ChatHeaderProps & {
   activeTab?: "friends" | "groups";
   loggedInUser?: string;
   onJoinRoomFromInvite?: (roomId: string) => void;
+  userOnlineStatus?: { isOnline: boolean; lastSeen?: number } | null;
 }) {
   const [showInvite, setShowInvite] = useState(false);
+
+
+  // Tính toán status text dựa trên userOnlineStatus
+  let statusText = "Đang kiểm tra..."; // Default khi chưa có data
+  let statusClass = "chat-header__status chat-header__status--offline";
+
+  // Chỉ hiển thị status cho tab friends
+  if (activeTab === "friends") {
+    if (userOnlineStatus === null || userOnlineStatus === undefined) {
+      // Đang loading hoặc chưa có data
+      statusText = "Đang kiểm tra...";
+      statusClass = "chat-header__status chat-header__status--offline"; 
+    } else if (userOnlineStatus.isOnline) {
+      statusText = "Hoạt động";
+      statusClass = "chat-header__status chat-header__status--online";
+    } else {
+      // Offline - không hiển thị thời gian
+      statusText = "Không hoạt động";
+      statusClass = "chat-header__status chat-header__status--offline";
+    }
+  } else {
+    // Tab groups - dùng status mặc định
+    statusText = status || "ACTIVE NOW";
+    statusClass = "chat-header__status";
+  }
 
   return (
     <header className="chat-header">
@@ -25,7 +52,7 @@ export default function ChatHeader({
         </div>
         <div className="chat-header__info">
           <h4 className="chat-header__name">{name}</h4>
-          <span className="chat-header__status">{status || "ACTIVE NOW"}</span>
+          <span className={statusClass}>{statusText}</span>
         </div>
       </div>
 

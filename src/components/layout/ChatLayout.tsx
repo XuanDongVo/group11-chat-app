@@ -21,6 +21,9 @@ export default function ChatLayout({
   sendChatRoom,
   joinRoom,
   friendsRefreshTrigger,
+  userOnlineStatus,
+  usersOnlineMap,
+  checkMultipleUsersOnline,
 }: ChatLayoutProps & {
   searchUsers: { name: string; avatar?: string }[];
   searchLoading: boolean;
@@ -28,6 +31,9 @@ export default function ChatLayout({
   sendChatRoom: (roomName: string, message: string) => void;
   joinRoom: (roomName: string) => void;
   friendsRefreshTrigger?: number;
+  userOnlineStatus?: { isOnline: boolean; lastSeen?: number } | null;
+  usersOnlineMap?: Map<string, { isOnline: boolean; lastSeen?: number }>;
+  checkMultipleUsersOnline?: (usernames: string[]) => void;
 }) {
   const [activeTab, setActiveTab] = useState<"friends" | "groups">("friends");
   const handleTabChange = (tab: "friends" | "groups") => setActiveTab(tab);
@@ -81,6 +87,8 @@ export default function ChatLayout({
         activeTab={activeTab}
         onTabChange={handleTabChange}
         refreshTrigger={friendsRefreshTrigger}
+        usersOnlineMap={usersOnlineMap}
+        checkMultipleUsersOnline={checkMultipleUsersOnline}
       />
 
       <main className="chat-main">
@@ -91,6 +99,7 @@ export default function ChatLayout({
               name={currentUser}
               activeTab={activeTab}
               loggedInUser={loggedInUser}
+              userOnlineStatus={userOnlineStatus}
             />
 
             {loadingMessages ? (

@@ -18,14 +18,14 @@ class WebSocketService {
       try {
         // Nếu đã có kết nối đang mở, không tạo mới
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          console.log('WebSocket already connected');
+          // console.log('WebSocket already connected');
           resolve();
           return;
         }
 
         // Nếu đang kết nối, đợi kết nối hiện tại
         if (this.ws && this.ws.readyState === WebSocket.CONNECTING) {
-          console.log('WebSocket is connecting, waiting...');
+          // console.log('WebSocket is connecting, waiting...');
           const checkInterval = setInterval(() => {
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
               clearInterval(checkInterval);
@@ -47,7 +47,7 @@ class WebSocketService {
         this.ws = new WebSocket(WS_URL);
 
         this.ws.onopen = () => {
-          console.log('WebSocket connected to', WS_URL);
+          // console.log('WebSocket connected to', WS_URL);
           this.reconnectAttempts = 0;
           this.hasConnectedBefore = true;
           this.shouldReconnect = true;
@@ -57,7 +57,7 @@ class WebSocketService {
         this.ws.onmessage = (event) => {
           try {
             const message: ServerMessage = JSON.parse(event.data);
-            console.log('Received message from server:', message);
+            // console.log('Received message from server:', message);
             
             // Lưu RE_LOGIN_CODE khi đăng nhập/đăng ký thành công
             if ((message.event === 'LOGIN' || message.event === 'REGISTER' || message.event === 'RE_LOGIN') 
@@ -80,12 +80,12 @@ class WebSocketService {
         };
 
         this.ws.onerror = (error) => {
-          console.error('Lỗi WebSocket:', error);
+          // console.error('Lỗi WebSocket:', error);
           reject(error);
         };
 
         this.ws.onclose = (event) => {
-          console.log('WebSocket disconnected', event.code, event.reason);
+          // console.log('WebSocket disconnected', event.code, event.reason);
           // Chỉ reconnect nếu đã từng kết nối thành công và shouldReconnect = true
           if (this.hasConnectedBefore && this.shouldReconnect) {
             this.handleReconnect();
@@ -100,7 +100,7 @@ class WebSocketService {
   private handleReconnect() {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      console.log(`Đang thử kết nối lại... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      // console.log(`Đang thử kết nối lại... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
       
       setTimeout(() => {
         this.connect().then(() => {
@@ -130,7 +130,7 @@ class WebSocketService {
       this.ws.send(JSON.stringify(message));
       console.log('Sent message:', message);
     } else {
-      console.error('WebSocket không được kết nối');
+      // console.error('WebSocket không được kết nối');
       throw new Error('WebSocket không được kết nối');
     }
   }

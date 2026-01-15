@@ -48,6 +48,8 @@ export interface SidebarItemProps {
   active?: boolean;
   time?: string;
   unread?: number;
+  isOnline?: boolean;
+  lastSeen?: number; // timestamp in seconds
 }
 
 // Sidebar Props
